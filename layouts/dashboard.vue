@@ -1,9 +1,9 @@
 <template>
   <main class="flex">
     <Sidebar />
-    <div class="ml-[270px]">
+    <div class="w-full ml-[270px]">
       <Topbar :title="selectedRoute" />
-      <div class="mt-[60px]">
+      <div class="mt-[60px] w-full">
         <slot />
       </div>
     </div>

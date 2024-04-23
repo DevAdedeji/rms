@@ -11,5 +11,14 @@ export default defineAppConfig({
     button: {
       base: "h-[40px]",
     },
+    table: {
+      base: "border border-gray-200 rounded-md",
+      th: {
+        base: "bg-gray-100",
+      },
+    },
+    select: {
+      base: "!h-[40px]",
+    },
   },
 });

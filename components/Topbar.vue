@@ -1,6 +1,6 @@
 <template>
   <header
-    class="bg-gray-100 fixed top-0 left-[250px] right-0 h-[60px] border border-gray-200 flex items-center justify-between px-4"
+    class="bg-gray-100 fixed top-0 left-[250px] right-0 h-[60px] border border-gray-200 flex items-center justify-between px-4 !z-50"
   >
     <h1 class="text-xl">{{ title }}</h1>
     <UPopover>
