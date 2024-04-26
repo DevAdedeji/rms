@@ -33,6 +33,11 @@ const links = ref([
     route: "/school/dashboard",
   },
   {
+    label: "Exam Officers",
+    icon: "i-heroicons-user-circle-solid",
+    route: "/exam-officers",
+  },
+  {
     label: "Faculties",
     icon: "i-heroicons-building-library-solid",
     route: "/faculties",
@@ -46,11 +51,6 @@ const links = ref([
     label: "Students",
     icon: "i-heroicons-user-group-solid",
     route: "/students",
-  },
-  {
-    label: "Check Result",
-    icon: "i-heroicons-calendar-days-solid",
-    route: "/student/results",
   },
 ]);
 
