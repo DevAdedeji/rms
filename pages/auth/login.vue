@@ -68,7 +68,7 @@ const userTypes = ref([
   },
   {
     id: UserTypes.faculty,
-    name: "Faculty Admin",
+    name: "Exam Officer",
     image: FacultyAdminImage,
   },
   {

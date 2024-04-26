@@ -2,9 +2,9 @@
   <UModal v-model="model">
     <UCard>
       <template #header>
-        <p>Add New Department</p>
+        <p>Edit Department</p>
       </template>
-      <form class="flex flex-col gap-6" @submit.prevent="saveDept">
+      <form class="flex flex-col gap-6" @submit.prevent="updateDept">
         <UFormGroup label="Select Faculty">
           <USelectMenu
             v-model="form.faculty"
@@ -22,7 +22,7 @@
           <UInput v-model="form.name" placeholder="Enter department name" />
         </UFormGroup>
         <div class="flex justify-end">
-          <UButton type="submit" class="px-6" :loading="adding">Save</UButton>
+          <UButton type="submit" class="px-6" :loading="updating">Save</UButton>
         </div>
       </form>
     </UCard>
@@ -31,24 +31,42 @@
 
 <script setup lang="ts">
 import { type facultyType } from "~/types/faculty";
-const emits = defineEmits(["added"]);
+import { type departmentType } from "~/types/department";
+const emits = defineEmits(["updated"]);
 const model = defineModel({ type: Boolean, default: false });
+const props = defineProps<{
+  department: departmentType | null;
+}>();
 
-const form = ref({
+const form = ref<departmentType>({
   faculty: null,
   name: "",
+  id: "",
 });
-const { adding, added, addDepartment } = useAddDepartment();
-const saveDept = async () => {
-  await addDepartment(form.value);
+const { updating, updated, updateDepartment } = useUpdateDepartment();
+const updateDept = async () => {
+  await updateDepartment(form.value);
   model.value = false;
   form.value.faculty = null;
   form.value.name = "";
+  form.value.id = "";
 };
 
-watch(added, () => {
-  emits("added");
+watch(updated, () => {
+  emits("updated");
 });
+
+watch(
+  () => props.department,
+  () => {
+    if (props.department) {
+      form.value.faculty = props.department.faculty;
+      form.value.name = props.department.name;
+      form.value.id = props.department.id;
+    }
+  },
+  { immediate: true },
+);
 
 const { fetchAllFaculties } = useFaculties();
 const faculties = ref<facultyType[]>([]);

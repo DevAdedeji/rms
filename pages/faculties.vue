@@ -17,25 +17,39 @@
           label: 'No faculties found!.',
         }"
       >
-        <template #actions-data>
+        <template #actions-data="{ row }">
           <div class="flex items-center gap-2">
-            <UButton>Edit</UButton>
-            <UButton color="red">Delete</UButton>
+            <UButton @click="openEditModal(row)">Edit</UButton>
+            <UButton color="red" @click="deleteFaculty(row.id)">Delete</UButton>
           </div>
         </template>
       </UTable>
     </div>
-    <LazyAddFacultyModal v-model="showAddFacultyModal" />
+    <LazyAddFacultyModal
+      v-model="showAddFacultyModal"
+      @added="newFacultyAdded = true"
+    />
+    <LazyEditFacultyModal
+      v-model="showEditFacultyModal"
+      :faculty="selectedFaculty"
+      @updated="facultyUpdated = true"
+    />
   </main>
 </template>
 
 <script setup lang="ts">
+import { type facultyType } from "~/types/faculty";
 definePageMeta({
   layout: "dashboard",
 });
 const toast = useToast();
 const { fetchAllFaculties } = useFaculties();
+const { deleteFaculty, deleted } = useDeleteFaculty();
 const showAddFacultyModal = ref(false);
+const newFacultyAdded = ref(false);
+const showEditFacultyModal = ref(false);
+const facultyUpdated = ref(false);
+const selectedFaculty = ref<facultyType | null>(null);
 const columns = [
   {
     key: "id",
@@ -50,10 +64,16 @@ const columns = [
   },
 ];
 
-const { data, error, pending } = await useAsyncData("faculties", async () => {
-  const faculties = await fetchAllFaculties();
-  return faculties;
-});
+const { data, error, pending } = await useAsyncData(
+  "faculties",
+  async () => {
+    const faculties = await fetchAllFaculties();
+    newFacultyAdded.value = false;
+    facultyUpdated.value = false;
+    return faculties;
+  },
+  { watch: [deleted, newFacultyAdded, facultyUpdated] },
+);
 
 const faculties = computed(() => data.value);
 if (error.value) {
@@ -64,4 +84,9 @@ if (error.value) {
     color: "red",
   });
 }
+
+const openEditModal = (data: facultyType) => {
+  selectedFaculty.value = data;
+  showEditFacultyModal.value = true;
+};
 </script>

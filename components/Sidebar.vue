@@ -30,7 +30,7 @@ const links = ref([
   {
     label: "Dashboard",
     icon: "i-heroicons-home-solid",
-    route: "/student/dashboard",
+    route: "/school/dashboard",
   },
   {
     label: "Faculties",
