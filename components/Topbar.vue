@@ -5,7 +5,7 @@
     <h1 class="text-xl">{{ title }}</h1>
     <UPopover>
       <UAvatar
-        alt="Benjamin Canac"
+        :alt="name"
         size="lg"
         chip-color="green"
         chip-position="bottom-right"
@@ -27,13 +27,21 @@
   </header>
 </template>
 
-<script setup lang="ts">
+<script setup>
 defineProps({
   title: {
     type: String,
     default: "",
   },
 });
+
+const userProfile = ref(null);
+
+const name = computed(() =>
+  userProfile.value
+    ? userProfile.value.first_name + " " + userProfile.value.last_name
+    : "Jane Doe",
+);
 
 const links = ref([
   {
@@ -45,4 +53,11 @@ const links = ref([
     icon: "i-heroicons-arrow-right-end-on-rectangle-solid",
   },
 ]);
+
+onBeforeMount(() => {
+  const userDetails = localStorage.getItem("user_profile");
+  if (userDetails) {
+    userProfile.value = JSON.parse(userDetails);
+  }
+});
 </script>
