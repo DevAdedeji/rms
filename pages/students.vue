@@ -70,6 +70,7 @@ import { type facultyType } from "~/types/faculty";
 import { type User } from "~/types/auth/user";
 definePageMeta({
   layout: "dashboard",
+  middleware: ["auth"],
 });
 const { fetchAllStudents } = useStudents();
 const { fetchAllFaculties } = useFaculties();

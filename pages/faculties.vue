@@ -41,6 +41,7 @@
 import { type facultyType } from "~/types/faculty";
 definePageMeta({
   layout: "dashboard",
+  middleware: ["auth"],
 });
 const toast = useToast();
 const { fetchAllFaculties } = useFaculties();

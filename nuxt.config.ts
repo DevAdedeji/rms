@@ -6,7 +6,7 @@ export default defineNuxtConfig({
     preference: "light",
   },
   css: ["/assets/css/main.css"],
-  modules: ["@nuxt/ui", "@nuxtjs/supabase"],
+  modules: ["@nuxt/ui", "@nuxtjs/supabase", "@vueuse/nuxt"],
   runtimeConfig: {
     public: {
       frontendBaseUrl:

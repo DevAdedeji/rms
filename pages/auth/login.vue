@@ -14,7 +14,7 @@
             <button
               v-for="user in userTypes"
               :key="user.id"
-              class="flex flex-col gap-3 items-center justify-center border rounded-lg border-gray-300 p-4"
+              class="flex flex-col gap-3 items-center justify-center border rounded-lg border-gray-300 py-4 px-8"
               @click="selected = user.id"
             >
               <button
@@ -57,6 +57,10 @@ import { UserTypes } from "../../types/auth/user";
 import StudentImage from "../../assets/images/student_icon.jpeg";
 import FacultyAdminImage from "../../assets/images/faculty_admin_icon.jpg";
 import SchoolAdminImage from "../../assets/images/school_admin_icon.png";
+
+definePageMeta({
+  middleware: ["auth"],
+});
 
 const toast = useToast();
 

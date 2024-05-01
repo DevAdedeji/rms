@@ -24,33 +24,52 @@
   </aside>
 </template>
 
-<script setup lang="ts">
+<script setup>
+import { UserTypes } from "~/types/auth/user";
 const route = useRoute();
-const links = ref([
+const { getUser } = useUser();
+
+const userProfile = ref(null);
+const links = computed(() => [
   {
     label: "Dashboard",
     icon: "i-heroicons-home-solid",
     route: "/school/dashboard",
+    show: userProfile.value
+      ? userProfile.value.role === UserTypes.school
+      : false,
   },
   {
     label: "Exam Officers",
     icon: "i-heroicons-user-circle-solid",
     route: "/exam-officers",
+    show: userProfile.value
+      ? userProfile.value.role === UserTypes.school
+      : false,
   },
   {
     label: "Faculties",
     icon: "i-heroicons-building-library-solid",
     route: "/faculties",
+    show: userProfile.value
+      ? userProfile.value.role === UserTypes.school
+      : false,
   },
   {
     label: "Departments",
     icon: "i-heroicons-building-office-solid",
     route: "/departments",
+    show: userProfile.value
+      ? userProfile.value.role === UserTypes.school
+      : false,
   },
   {
     label: "Students",
     icon: "i-heroicons-user-group-solid",
     route: "/students",
+    show: userProfile.value
+      ? userProfile.value.role === UserTypes.school
+      : false,
   },
 ]);
 
@@ -65,4 +84,9 @@ watch(
   },
   { immediate: true },
 );
+
+onBeforeMount(() => {
+  const userDetails = getUser();
+  userProfile.value = userDetails;
+});
 </script>
