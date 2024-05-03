@@ -13,7 +13,20 @@ export default defineNuxtRouteMiddleware((to, _from) => {
       if (userProfile?.role === UserTypes.school) {
         return navigateTo("/school/dashboard");
       } else if (userProfile?.role === UserTypes.faculty) {
-        return navigateTo("/faculty/dashboard");
+        return navigateTo("/exam-officer/dashboard");
+      } else {
+        return navigateTo("/student/dashboard");
+      }
+    }
+  }
+  if (to.path === "/") {
+    if (!user.value) {
+      return navigateTo("/auth/login");
+    } else if (userProfile) {
+      if (userProfile?.role === UserTypes.school) {
+        return navigateTo("/school/dashboard");
+      } else if (userProfile?.role === UserTypes.faculty) {
+        return navigateTo("/exam-officer/dashboard");
       } else {
         return navigateTo("/student/dashboard");
       }

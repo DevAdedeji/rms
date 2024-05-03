@@ -14,7 +14,11 @@
           class="hover:bg-gray-200 rounded-md w-full flex items-center"
           :class="route.path === link.route ? 'bg-gray-200' : ''"
         >
-          <NuxtLink class="flex items-center gap-4 py-1 px-2" :to="link.route">
+          <NuxtLink
+            v-if="link.show"
+            class="w-full flex items-center gap-4 py-1 px-2"
+            :to="link.route"
+          >
             <UIcon :name="link.icon" />
             <p>{{ link.label }}</p>
           </NuxtLink>
@@ -37,6 +41,22 @@ const links = computed(() => [
     route: "/school/dashboard",
     show: userProfile.value
       ? userProfile.value.role === UserTypes.school
+      : false,
+  },
+  {
+    label: "Dashboard",
+    icon: "i-heroicons-home-solid",
+    route: "/student/dashboard",
+    show: userProfile.value
+      ? userProfile.value.role === UserTypes.student
+      : false,
+  },
+  {
+    label: "Results",
+    icon: "i-heroicons-calendar-days-solid",
+    route: "/student/results",
+    show: userProfile.value
+      ? userProfile.value.role === UserTypes.student
       : false,
   },
   {
@@ -66,7 +86,7 @@ const links = computed(() => [
   {
     label: "Students",
     icon: "i-heroicons-user-group-solid",
-    route: "/students",
+    route: "/school/students",
     show: userProfile.value
       ? userProfile.value.role === UserTypes.school
       : false,
