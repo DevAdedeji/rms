@@ -11,3 +11,31 @@ export const useStudents = () => {
   };
   return { fetchAllStudents };
 };
+
+export const useStudent = () => {
+  const client = useSupabaseClient();
+  const toast = useToast();
+  const { fetchUserProfileDetails } = useUser();
+  const fetchStudentByMatricNo = async (matricNo: string) => {
+    const { data } = await client
+      .from("user_profiles")
+      .select("*")
+      .eq("matric_no", matricNo)
+      .single();
+    let student: User;
+    if (data) {
+      student = data;
+      const user = await fetchUserProfileDetails(student.id);
+      return user;
+    } else {
+      toast.add({
+        title: "Error",
+        description: "Student not found",
+        icon: "i-heroicons-x-circle",
+        color: "red",
+      });
+    }
+  };
+
+  return { fetchStudentByMatricNo };
+};

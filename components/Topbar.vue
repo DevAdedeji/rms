@@ -17,6 +17,7 @@
             v-for="link in links"
             :key="link.icon"
             class="flex items-center gap-2"
+            @click="link.action"
           >
             <UIcon :name="link.icon" />
             <p>{{ link.label }}</p>
@@ -35,6 +36,9 @@ defineProps({
   },
 });
 
+const { logOut } = useAuth();
+const { getUser } = useUser();
+
 const userProfile = ref(null);
 
 const name = computed(() =>
@@ -47,17 +51,19 @@ const links = ref([
   {
     label: "Settings",
     icon: "i-heroicons-cog-6-tooth-solid",
+    action: () => {},
   },
   {
     label: "Sign out",
     icon: "i-heroicons-arrow-right-end-on-rectangle-solid",
+    action: () => {
+      logOut();
+    },
   },
 ]);
 
 onBeforeMount(() => {
-  const userDetails = localStorage.getItem("user_profile");
-  if (userDetails) {
-    userProfile.value = JSON.parse(userDetails);
-  }
+  const userDetails = getUser();
+  userProfile.value = userDetails;
 });
 </script>

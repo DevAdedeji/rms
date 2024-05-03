@@ -1,3 +1,5 @@
+import { UserTypes, type User } from "~/types/auth/user";
+
 interface loginDetailsType {
   email: string;
   password: string;
@@ -21,6 +23,13 @@ export const useAuth = () => {
         const user = await fetchUserProfileDetails(data.user.id);
         if (user) {
           setUser(user);
+          if (user.role === UserTypes.school) {
+            return navigateTo("/school/dashboard");
+          } else if (user.role === UserTypes.faculty) {
+            return navigateTo("/exam-officer/dashboard");
+          } else {
+            return navigateTo("/student/dashboard");
+          }
         }
         return navigateTo("/");
       }
@@ -36,6 +45,12 @@ export const useAuth = () => {
     }
   };
   const logOut = () => {
+    toast.add({
+      id: "user-log-out",
+      title: "Info",
+      description: "Signing out....",
+      color: "primary",
+    });
     localStorage.removeItem("user_profile");
     client.auth.signOut().then(() => {
       navigateTo("/auth/login");
@@ -47,7 +62,7 @@ export const useAuth = () => {
 
 export const useUser = () => {
   const client = useSupabaseClient();
-  const fetchUserProfileDetails = async (id: string) => {
+  const fetchUserProfileDetails = async (id: String) => {
     const { data } = await client
       .from("user_profiles")
       .select("*")
@@ -55,7 +70,7 @@ export const useUser = () => {
       .single();
 
     if (data) {
-      return data;
+      return data as User;
     }
   };
   const getUser = () => {

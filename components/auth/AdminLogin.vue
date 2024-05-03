@@ -19,7 +19,7 @@
       </UFormGroup>
       <UFormGroup
         label="Password"
-        :error="$v.password.$error && 'You must enter an email'"
+        :error="$v.password.$error && 'You must enter a password'"
       >
         <UInput
           v-model="form.password"
