@@ -4,7 +4,7 @@
       <div class="grid grid-cols-3 gap-6">
         <UCard
           v-for="summary in summaries"
-          :key="summary"
+          :key="summary.label"
           class="!bg-black-100"
         >
           <div class="flex flex-col gap-8 justify-between">

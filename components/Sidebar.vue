@@ -68,6 +68,14 @@ const links = computed(() => [
       : false,
   },
   {
+    label: "Results Approval",
+    icon: "i-heroicons-cursor-arrow-ripple-solid",
+    route: "/school/result-approval",
+    show: userProfile.value
+      ? userProfile.value.role === UserTypes.school
+      : false,
+  },
+  {
     label: "Faculties",
     icon: "i-heroicons-building-library-solid",
     route: "/faculties",
