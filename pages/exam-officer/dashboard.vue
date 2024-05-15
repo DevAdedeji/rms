@@ -1,8 +1,6 @@
 <template>
   <main class="bg-white min-h-screen w-full">
-    <div class="flex">
-      <h1>Faculty admin page</h1>
-    </div>
+    <div class="flex flex-col gap-6 py-10">Exam officer page</div>
   </main>
 </template>
 
