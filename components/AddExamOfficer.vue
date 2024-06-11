@@ -2,9 +2,29 @@
   <UModal v-model="model">
     <UCard>
       <template #header>
-        <p>Add New Department</p>
+        <p>Add Exam Officer</p>
       </template>
-      <form class="flex flex-col gap-6" @submit.prevent>
+      <form class="flex flex-col gap-6" @submit.prevent="handleAddExamOfficer">
+        <div class="grid grid-cols-2 gap-2">
+          <UFormGroup label="First Name">
+            <UInput
+              v-model="form.first_name"
+              placeholder="First Name"
+              required
+            />
+          </UFormGroup>
+          <UFormGroup label="Last Name">
+            <UInput v-model="form.last_name" placeholder="Last Name" required />
+          </UFormGroup>
+        </div>
+        <UFormGroup label="Email Address">
+          <UInput
+            v-model="form.email"
+            placeholder="johndoe@gmail.com"
+            type="email"
+            required
+          />
+        </UFormGroup>
         <UFormGroup label="Select Faculty">
           <USelectMenu
             v-model="form.faculty"
@@ -12,6 +32,7 @@
             :options="faculties"
             option-attribute="name"
             placeholder="Select faculty"
+            required
           >
             <template #option="{ option: faculty }">
               <span class="truncate">{{ faculty.name }}</span>
@@ -25,6 +46,7 @@
             placeholder="Filter by department"
             option-attribute="name"
             :loading="searching"
+            required
           >
             <template #option="{ option: dept }">
               <span class="truncate">{{ dept.name }}</span>
@@ -34,8 +56,16 @@
             </template>
           </USelectMenu>
         </UFormGroup>
+        <UFormGroup label="Password">
+          <UInput
+            v-model="form.password"
+            placeholder="********"
+            type="password"
+            required
+          />
+        </UFormGroup>
         <div class="flex justify-end">
-          <UButton type="submit" class="px-6">Save</UButton>
+          <UButton type="submit" class="px-6" :loading="adding">Save</UButton>
         </div>
       </form>
     </UCard>
@@ -45,19 +75,18 @@
 <script setup lang="ts">
 import { type facultyType } from "~/types/faculty";
 import { type departmentType } from "~/types/department";
-// const emits = defineEmits(["added"]);
+import { type ExamOfficerFormType } from "~/types/admin";
+const emits = defineEmits(["added"]);
 const model = defineModel({ type: Boolean, default: false });
+const { addExamOfficer, adding, added } = useExamOfficers();
 
-interface formType {
-  faculty: facultyType | null;
-  department: departmentType | null;
-  name: string;
-}
-
-const form = ref<formType>({
+const form = ref<ExamOfficerFormType>({
   faculty: null,
   department: null,
-  name: "",
+  first_name: "",
+  last_name: "",
+  email: "",
+  password: "",
 });
 
 const { fetchDepartmentsByFacultyId } = useDepartments();
@@ -97,6 +126,21 @@ watch(
     }
   },
 );
+
+watch(added, () => {
+  emits("added");
+});
+
+const handleAddExamOfficer = async () => {
+  await addExamOfficer(form.value);
+  form.value.faculty = null;
+  form.value.department = null;
+  form.value.first_name = "";
+  form.value.last_name = "";
+  form.value.email = "";
+  form.value.password = "";
+};
+
 onMounted(() => {
   getFaculties();
 });
