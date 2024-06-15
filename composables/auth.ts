@@ -30,6 +30,16 @@ export const useAuth = () => {
           } else {
             return navigateTo("/student/dashboard");
           }
+        } else {
+          toast.add({
+            title: "Error",
+            description: "User Not Found",
+            icon: "i-heroicons-x-circle",
+            color: "red",
+          });
+          client.auth.signOut().then(() => {
+            navigateTo("/auth/login");
+          });
         }
         return navigateTo("/");
       }
@@ -44,6 +54,7 @@ export const useAuth = () => {
       });
     }
   };
+
   const logOut = () => {
     toast.add({
       id: "user-log-out",
@@ -62,6 +73,7 @@ export const useAuth = () => {
 
 export const useUser = () => {
   const client = useSupabaseClient();
+
   const fetchUserProfileDetails = async (id: String) => {
     const { data } = await client
       .from("user_profiles")
@@ -73,6 +85,7 @@ export const useUser = () => {
       return data as User;
     }
   };
+
   const getUser = () => {
     const userDetails = localStorage.getItem("user_profile");
     let userProfile = null;
@@ -81,6 +94,7 @@ export const useUser = () => {
     }
     return userProfile;
   };
+
   const setUser = (user: any) => {
     localStorage.setItem("user_profile", JSON.stringify(user));
   };

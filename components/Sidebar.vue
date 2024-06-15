@@ -15,7 +15,6 @@
           :class="route.path === link.route ? 'bg-gray-200' : ''"
         >
           <NuxtLink
-            v-if="link.show"
             class="w-full flex items-center gap-4 py-1 px-2"
             :to="link.route"
           >
@@ -34,80 +33,82 @@ const route = useRoute();
 const { getUser } = useUser();
 
 const userProfile = ref(null);
-const links = computed(() => [
-  {
-    label: "Dashboard",
-    icon: "i-heroicons-home-solid",
-    route: "/school/dashboard",
-    show: userProfile.value
-      ? userProfile.value.role === UserTypes.school
-      : false,
-  },
-  {
-    label: "Dashboard",
-    icon: "i-heroicons-home-solid",
-    route: "/student/dashboard",
-    show: userProfile.value
-      ? userProfile.value.role === UserTypes.student
-      : false,
-  },
-  {
-    label: "Results",
-    icon: "i-heroicons-calendar-days-solid",
-    route: "/student/results",
-    show: userProfile.value
-      ? userProfile.value.role === UserTypes.student
-      : false,
-  },
-  {
-    label: "Exam Officers",
-    icon: "i-heroicons-user-circle-solid",
-    route: "/exam-officers",
-    show: userProfile.value
-      ? userProfile.value.role === UserTypes.school
-      : false,
-  },
-  {
-    label: "Results Approval",
-    icon: "i-heroicons-cursor-arrow-ripple-solid",
-    route: "/school/result-approval",
-    show: userProfile.value
-      ? userProfile.value.role === UserTypes.school
-      : false,
-  },
-  {
-    label: "Faculties",
-    icon: "i-heroicons-building-library-solid",
-    route: "/faculties",
-    show: userProfile.value
-      ? userProfile.value.role === UserTypes.school
-      : false,
-  },
-  {
-    label: "Departments",
-    icon: "i-heroicons-building-office-solid",
-    route: "/departments",
-    show: userProfile.value
-      ? userProfile.value.role === UserTypes.school
-      : false,
-  },
-  {
-    label: "Students",
-    icon: "i-heroicons-user-group-solid",
-    route: "/school/students",
-    show: userProfile.value
-      ? userProfile.value.role === UserTypes.school
-      : false,
-  },
-]);
+const links = computed(() => {
+  if (userProfile.value && userProfile.value.role) {
+    if (userProfile.value.role === UserTypes.school) {
+      return [
+        {
+          label: "Dashboard",
+          icon: "i-heroicons-home-solid",
+          route: "/school/dashboard",
+        },
+        {
+          label: "Exam Officers",
+          icon: "i-heroicons-user-circle-solid",
+          route: "/exam-officers",
+        },
+        {
+          label: "Results Approval",
+          icon: "i-heroicons-cursor-arrow-ripple-solid",
+          route: "/school/result-approval",
+        },
+        {
+          label: "Faculties",
+          icon: "i-heroicons-building-library-solid",
+          route: "/faculties",
+        },
+        {
+          label: "Departments",
+          icon: "i-heroicons-building-office-solid",
+          route: "/departments",
+        },
+        {
+          label: "Students",
+          icon: "i-heroicons-user-group-solid",
+          route: "/school/students",
+        },
+      ];
+    }
+    if (userProfile.value.role === UserTypes.student) {
+      return [
+        {
+          label: "Dashboard",
+          icon: "i-heroicons-home-solid",
+          route: "/student/dashboard",
+        },
+        {
+          label: "Results",
+          icon: "i-heroicons-calendar-days-solid",
+          route: "/student/results",
+        },
+      ];
+    }
+    if (userProfile.value.role === UserTypes.faculty) {
+      return [
+        {
+          label: "Dashboard",
+          icon: "i-heroicons-home-solid",
+          route: "/exam-officer/dashboard",
+        },
+        {
+          label: "Students",
+          icon: "i-heroicons-calendar-days-solid",
+          route: "/exam-officer/students",
+        },
+      ];
+    }
+  }
+});
 
 const selectedRoute = useSelectedRoute();
 watch(
   () => route.path,
   () => {
-    const link = links.value.find((link) => link.route === route.path);
-    if (link) {
-      selectedRoute.value = link.label;
+    if (links.value) {
+      const link = links.value.find((link) => link.route === route.path);
+      if (link) {
+        selectedRoute.value = link.label;
+      }
     }
   },
   { immediate: true },
