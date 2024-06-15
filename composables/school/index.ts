@@ -4,8 +4,6 @@ import { UserTypes, type User } from "~/types/auth/user";
 export const useExamOfficers = () => {
   const client = useSupabaseClient();
   const toast = useToast();
-  const adding = ref(false);
-  const added = ref(false);
 
   const fetchExamOfficers = async () => {
     const officers = await client
@@ -15,6 +13,8 @@ export const useExamOfficers = () => {
     return officers.data as unknown as User[];
   };
 
+  const adding = ref(false);
+  const added = ref(false);
   const addExamOfficer = async (form: ExamOfficerFormType) => {
     adding.value = true;
     const { data, error } = await client.auth.signUp({
@@ -64,5 +64,67 @@ export const useExamOfficers = () => {
     }
   };
 
-  return { addExamOfficer, adding, added, fetchExamOfficers };
+  const updating = ref(false);
+  const updated = ref(false);
+  const updateExamOfficer = async (formData: any) => {
+    updating.value = true;
+    updated.value = false;
+    const { data, error } = await client.from("user_profiles").upsert(formData);
+    if (data) {
+      toast.add({
+        title: "Success",
+        description: "Exam Officer info updated successfully",
+        icon: "i-heroicons-check-circle",
+        color: "primary",
+      });
+      return data;
+    }
+    if (error) {
+      toast.add({
+        title: "Error",
+        description:
+          error.message ||
+          "Couldn't update exam officer info, pls try again later",
+        icon: "i-heroicons-x-circle",
+        color: "red",
+      });
+    }
+    updating.value = false;
+    updated.value = true;
+  };
+
+  const deleted = ref(false);
+  const deleteExamOfficer = async (id: string) => {
+    deleted.value = false;
+    const { error } = await client.from("user_profiles").delete().eq("id", id);
+    if (error) {
+      toast.add({
+        title: "Error",
+        description:
+          error.message || "Couldn't delete exam officer, pls try again later",
+        icon: "i-heroicons-x-circle",
+        color: "red",
+      });
+    } else {
+      toast.add({
+        title: "Success",
+        description: "Exam officer deleted successfully",
+        icon: "i-heroicons-check-circle",
+        color: "primary",
+      });
+      deleted.value = true;
+    }
+  };
+
+  return {
+    addExamOfficer,
+    adding,
+    added,
+    fetchExamOfficers,
+    updated,
+    updating,
+    updateExamOfficer,
+    deleteExamOfficer,
+    deleted,
+  };
 };

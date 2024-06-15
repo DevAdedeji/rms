@@ -2,9 +2,9 @@
   <UModal v-model="model">
     <UCard>
       <template #header>
-        <p>Add Exam Officer</p>
+        <p>Edit Exam Officer</p>
       </template>
-      <form class="flex flex-col gap-6" @submit.prevent="handleAddExamOfficer">
+      <form class="flex flex-col gap-6" @submit.prevent="handleEditExamOfficer">
         <div class="grid grid-cols-2 gap-2">
           <UFormGroup label="First Name">
             <UInput
@@ -17,14 +17,6 @@
             <UInput v-model="form.last_name" placeholder="Last Name" required />
           </UFormGroup>
         </div>
-        <UFormGroup label="Email Address">
-          <UInput
-            v-model="form.email"
-            placeholder="johndoe@gmail.com"
-            type="email"
-            required
-          />
-        </UFormGroup>
         <UFormGroup label="Select Faculty">
           <USelectMenu
             v-model="form.faculty"
@@ -56,16 +48,8 @@
             </template>
           </USelectMenu>
         </UFormGroup>
-        <UFormGroup label="Password">
-          <UInput
-            v-model="form.password"
-            placeholder="********"
-            type="password"
-            required
-          />
-        </UFormGroup>
         <div class="flex justify-end">
-          <UButton type="submit" class="px-6" :loading="adding">Save</UButton>
+          <UButton type="submit" class="px-6" :loading="updating">Save</UButton>
         </div>
       </form>
     </UCard>
@@ -75,18 +59,20 @@
 <script setup lang="ts">
 import { type facultyType } from "~/types/faculty";
 import { type departmentType } from "~/types/department";
-import { type ExamOfficerFormType } from "~/types/admin";
-const emits = defineEmits(["added"]);
+const emits = defineEmits(["updated"]);
 const model = defineModel({ type: Boolean, default: false });
-const { addExamOfficer, adding, added } = useExamOfficers();
+const { updateExamOfficer, updated, updating } = useExamOfficers();
 
-const form = ref<ExamOfficerFormType>({
+const props = defineProps<{
+  exam_officer: any | null;
+}>();
+
+const form = ref<any>({
   faculty: null,
   department: null,
   first_name: "",
   last_name: "",
-  email: "",
-  password: "",
+  id: "",
 });
 
 const { fetchDepartmentsByFacultyId } = useDepartments();
@@ -127,19 +113,31 @@ watch(
   },
 );
 
-watch(added, () => {
-  emits("added");
+watch(updated, () => {
+  emits("updated");
 });
 
-const handleAddExamOfficer = async () => {
-  await addExamOfficer(form.value);
+watch(
+  () => props.exam_officer,
+  () => {
+    if (props.exam_officer) {
+      form.value.faculty = props.exam_officer.faculty;
+      form.value.first_name = props.exam_officer.first_name;
+      form.value.last_name = props.exam_officer.last_name;
+      form.value.department = props.exam_officer.department;
+      form.value.id = props.exam_officer.id;
+    }
+  },
+  { immediate: true },
+);
+
+const handleEditExamOfficer = async () => {
+  await updateExamOfficer(form.value);
   model.value = false;
   form.value.faculty = null;
   form.value.department = null;
   form.value.first_name = "";
   form.value.last_name = "";
-  form.value.email = "";
-  form.value.password = "";
 };
 
 onMounted(() => {

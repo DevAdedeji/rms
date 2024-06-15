@@ -17,6 +17,9 @@
           label: 'No faculties found!.',
         }"
       >
+        <template #index-data="{ index }">
+          <p>{{ index + 1 }}</p>
+        </template>
         <template #actions-data="{ row }">
           <div class="flex items-center gap-2">
             <UButton @click="openEditModal(row)">Edit</UButton>
@@ -53,8 +56,8 @@ const facultyUpdated = ref(false);
 const selectedFaculty = ref<facultyType | null>(null);
 const columns = [
   {
-    key: "id",
-    label: "ID",
+    key: "index",
+    label: "S/N",
   },
   {
     key: "name",

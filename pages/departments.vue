@@ -26,6 +26,9 @@
           label: 'No departments found!.',
         }"
       >
+        <template #index-data="{ index }">
+          <p>{{ index + 1 }}</p>
+        </template>
         <template #faculty-data="{ row }">
           <p>{{ row.faculty.name }}</p>
         </template>
@@ -67,8 +70,8 @@ const deptUpdated = ref(false);
 const selectedDepartment = ref<departmentType | null>(null);
 const columns = [
   {
-    key: "id",
-    label: "ID",
+    key: "index",
+    label: "S/N",
   },
   {
     key: "name",

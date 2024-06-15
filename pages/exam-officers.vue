@@ -29,14 +29,19 @@
         <template #department-data="{ row }">
           <p>{{ row.department.name }}</p>
         </template>
-        <template #actions-data="{}">
+        <template #actions-data="{ row }">
           <div class="flex items-center gap-2">
-            <UButton @click="openEditModal">Edit</UButton>
-            <UButton color="red" @click="deleteOfficer">Delete</UButton>
+            <UButton @click="openEditModal(row)">Edit</UButton>
+            <UButton color="red" @click="deleteOfficer(row.id)">Delete</UButton>
           </div>
         </template>
       </UTable>
     </div>
+    <LazyEditExamOfficer
+      v-model="showEditExamOfficerModal"
+      :exam_officer="selectedExamOfficer"
+      @updated="examOfficerInfoUpdated = true"
+    />
     <LazyAddExamOfficer v-model="showAddExamOfficerModal" />
   </main>
 </template>
@@ -49,8 +54,13 @@ definePageMeta({
   middleware: ["auth"],
 });
 const toast = useToast();
-const { fetchExamOfficers, added } = useExamOfficers();
+const { fetchExamOfficers, added, deleteExamOfficer, deleted } =
+  useExamOfficers();
 const showAddExamOfficerModal = ref(false);
+const showEditExamOfficerModal = ref(false);
+const selectedExamOfficer = ref(null);
+const examOfficerInfoUpdated = ref(false);
+
 const columns = [
   {
     key: "sn",
@@ -75,11 +85,12 @@ const columns = [
 
 const officers = ref<User[]>([]);
 
-const openEditModal = () => {
-  //
+const openEditModal = (row: any) => {
+  selectedExamOfficer.value = row;
+  showEditExamOfficerModal.value = true;
 };
-const deleteOfficer = () => {
-  //
+const deleteOfficer = async (id: string) => {
+  await deleteExamOfficer(id);
 };
 
 const { data, error, pending } = await useAsyncData(
@@ -87,9 +98,10 @@ const { data, error, pending } = await useAsyncData(
   async () => {
     const officers = await fetchExamOfficers();
     added.value = false;
+    examOfficerInfoUpdated.value = false;
     return officers;
   },
-  { watch: [added] },
+  { watch: [added, examOfficerInfoUpdated, deleted] },
 );
 if (error.value) {
   toast.add({
