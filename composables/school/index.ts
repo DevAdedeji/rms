@@ -4,6 +4,7 @@ import { UserTypes, type User } from "~/types/auth/user";
 export const useExamOfficers = () => {
   const client = useSupabaseClient();
   const toast = useToast();
+  const { getUser } = useUser();
 
   const fetchExamOfficers = async () => {
     const officers = await client
@@ -116,6 +117,17 @@ export const useExamOfficers = () => {
     }
   };
 
+  const fetchExamOfficerStudent = async () => {
+    const user = getUser();
+    const departmentId = user.department.id;
+    const { data } = await client
+      .from("user_profiles")
+      .select("*")
+      .eq("role", UserTypes.student)
+      .filter("department->id", "eq", departmentId);
+    return data as unknown as User[];
+  };
+
   return {
     addExamOfficer,
     adding,
@@ -126,5 +138,6 @@ export const useExamOfficers = () => {
     updateExamOfficer,
     deleteExamOfficer,
     deleted,
+    fetchExamOfficerStudent,
   };
 };
