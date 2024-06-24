@@ -37,5 +37,23 @@ export const useStudent = () => {
     }
   };
 
-  return { fetchStudentByMatricNo };
+  const fetchStudentById = async (id: string) => {
+    const { data } = await client
+      .from("user_profiles")
+      .select("*")
+      .eq("id", id)
+      .single();
+    if (data) {
+      return data;
+    } else {
+      toast.add({
+        title: "Error",
+        description: "Student not found",
+        icon: "i-heroicons-x-circle",
+        color: "red",
+      });
+    }
+  };
+
+  return { fetchStudentByMatricNo, fetchStudentById };
 };

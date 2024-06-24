@@ -46,6 +46,7 @@
           icon: 'i-heroicons-circle-stack-20-solid',
           label: 'No Students found!.',
         }"
+        @select="openStudentPage"
       >
         <template #index-data="{ index }">
           <p>{{ index + 1 }}</p>
@@ -76,6 +77,7 @@ const { fetchAllStudents } = useStudents();
 const { fetchAllFaculties } = useFaculties();
 const { fetchDepartmentsByFacultyId } = useDepartments();
 const toast = useToast();
+const router = useRouter();
 
 const columns = [
   {
@@ -171,6 +173,10 @@ const getDepartments = async () => {
   } finally {
     searching.value = false;
   }
+};
+
+const openStudentPage = (student: User) => {
+  router.push(`/student/${student.id}`);
 };
 
 watch(facultySelected, async () => {

@@ -25,6 +25,7 @@
           icon: 'i-heroicons-circle-stack-20-solid',
           label: 'No Students found!.',
         }"
+        @select="openStudentPage"
       >
         <template #index-data="{ index }">
           <p>{{ index + 1 }}</p>
@@ -41,6 +42,7 @@ definePageMeta({
   middleware: ["auth"],
 });
 const toast = useToast();
+const router = useRouter();
 const { fetchExamOfficerStudent } = useExamOfficers();
 
 const q = ref("");
@@ -96,6 +98,10 @@ const updateFilteredRows = () => {
   } else {
     filteredRows.value = [];
   }
+};
+
+const openStudentPage = (student: User) => {
+  router.push(`/student/${student.id}`);
 };
 
 watch(
