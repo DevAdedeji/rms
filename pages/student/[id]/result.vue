@@ -18,6 +18,22 @@
           <span class="text-[#000000]">Semester:</span>
           {{ session.semester }} semester
         </p>
+        <p
+          v-if="resultFound || resultSaved"
+          class="capitalize text-[#09A5BE] flex items-center gap-1"
+        >
+          <span class="text-[#000000]">Approval:</span>
+          <span
+            class="px-2 py-[2px] rounded"
+            :class="
+              result.approved
+                ? 'bg-[#D1FFD1] text-[#008000]'
+                : 'bg-[#FCE3EA] text-[#ED4C78]'
+            "
+          >
+            {{ result.approved ? "Approved" : "Unapproved" }}
+          </span>
+        </p>
       </div>
       <UTable :rows="courses" :loading="pending" :columns="columns">
         <template #sn-data="{ index }">
@@ -46,15 +62,23 @@
           <UInput v-model="row.point" disabled class="w-[50px]" />
         </template>
       </UTable>
-      <div v-if="resultFormatted" class="w-1/2">
+      <div v-if="resultFormatted">
         <p class="text-2xl font-semibold text-gray-600 capitalize pb-2">
           {{ session.semester }} Semester Result
         </p>
-        <UTable :rows="[result]" :columns="semesterResultColumn" />
+        <div class="w-1/2">
+          <UTable :rows="[result]" :columns="semesterResultColumn" />
+        </div>
+        <div class="flex items-center justify-end">
+          <UButton class="mt-10 px-6 py-4" @click="handleSaving">
+            Save Result
+          </UButton>
+        </div>
       </div>
       <UButton
+        v-if="!resultFormatted"
         class="ml-auto self-start px-6 py-4"
-        @click="formatCoursesForSaving"
+        @click="handleFormatCoursesAsResult"
         >Update</UButton
       >
     </div>
@@ -66,7 +90,12 @@ definePageMeta({
   layout: "dashboard",
   middleware: ["auth"],
 });
-const { fetchStudentById, fetchStudentCourseBySession } = useStudent();
+const {
+  fetchStudentById,
+  fetchStudentCourseBySession,
+  fetchStudentResult,
+  saveStudentResult,
+} = useStudent();
 const { calculateGrade, calculatePoint, calculateClass } = useCalculator();
 const toast = useToast();
 const route = useRoute();
@@ -169,16 +198,25 @@ const handleScoreChange = (row: any) => {
 };
 
 const result = ref({});
+const resultId = ref(null);
+const resultFound = ref(false);
 const resultFormatted = ref(false);
+const resultSaved = ref(false);
 
-const formatCoursesForSaving = () => {
-  const formattedCourses = courses.value.map((course) => {
+const handleFormatCoursesAsResult = () => {
+  formatCoursesAsResult();
+  resultFormatted.value = true;
+};
+
+const formatCoursesAsResult = () => {
+  const formattedCourses = courses.value.map((course: any) => {
     return {
       id: course.course.course_id,
       title: course.course.title,
       code: course.course.course_code,
       score: course.score,
       unit: course.unit,
+      grade: course.grade,
       point: course.point,
       level: course.level,
       semester: course.semester,
@@ -198,19 +236,56 @@ const formatCoursesForSaving = () => {
   );
   const gpa = Number((totalPointScored / totalUnit).toFixed(2));
   const gpaClass = calculateClass(gpa);
-  result.value = {
-    courses: formattedCourses,
-    level: session.value.level,
-    semester: session.value.semester,
-    user_id: studentId,
-    total_point: totalPoint,
-    total_point_scored: totalPointScored,
-    total_unit: totalUnit,
-    gpa,
-    approved: false,
-    class: gpaClass,
-  };
-  resultFormatted.value = true;
+  result.value = resultFound.value
+    ? {
+        courses: formattedCourses,
+        level: Number(session.value.level),
+        semester: session.value.semester,
+        user_id: studentId,
+        total_point: totalPoint,
+        total_point_scored: totalPointScored,
+        total_unit: totalUnit,
+        gpa,
+        approved: false,
+        class: gpaClass,
+        id: resultId.value,
+      }
+    : {
+        courses: formattedCourses,
+        level: Number(session.value.level),
+        semester: session.value.semester,
+        user_id: studentId,
+        total_point: totalPoint,
+        total_point_scored: totalPointScored,
+        total_unit: totalUnit,
+        gpa,
+        approved: false,
+        class: gpaClass,
+      };
+};
+
+const handleSaving = async () => {
+  const saved = await saveStudentResult(result.value);
+  if (saved) {
+    resultSaved.value = true;
+  } else {
+    resultSaved.value = false;
+  }
+};
+
+const formatCoursesIfResult = (result: any) => {
+  const fetchedCourses = result.courses;
+  fetchedCourses.forEach((course: any) => {
+    const newCourse: any = courses.value.find(
+      (fetchedCourse: any) => fetchedCourse.course.course_id === course.id,
+    );
+    if (newCourse) {
+      newCourse.point = course.point;
+      newCourse.grade = course.grade;
+      newCourse.score = course.score;
+    }
+  });
+  formatCoursesAsResult();
 };
 
 watch(
@@ -218,7 +293,19 @@ watch(
   async () => {
     session.value.level = route.query.level as string;
     session.value.semester = route.query.semester as string;
+    const result: any = await fetchStudentResult(
+      studentId,
+      session.value.semester,
+      session.value.level,
+    );
     await fetchCourses();
+    if (result) {
+      resultFound.value = true;
+      resultId.value = result.id;
+      formatCoursesIfResult(result);
+    } else {
+      resultFound.value = false;
+    }
   },
   { immediate: true },
 );
