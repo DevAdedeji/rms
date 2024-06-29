@@ -44,7 +44,7 @@ export const useStudent = () => {
       .eq("id", id)
       .single();
     if (data) {
-      return data;
+      return data as User;
     } else {
       toast.add({
         title: "Error",
@@ -55,5 +55,65 @@ export const useStudent = () => {
     }
   };
 
-  return { fetchStudentByMatricNo, fetchStudentById };
+  const fetchStudentCourseBySession = async (
+    id: string,
+    semester: string,
+    level: string,
+  ) => {
+    const { data } = await client
+      .from("student_courses")
+      .select("*")
+      .eq("user_id", id)
+      .filter("level", "eq", level)
+      .filter("semester", "eq", semester);
+    if (data) {
+      return data;
+    } else {
+      toast.add({
+        title: "Error",
+        description: "Something went wrong, pls try again",
+        icon: "i-heroicons-x-circle",
+        color: "red",
+      });
+    }
+  };
+
+  const fetchStudentResult = async (
+    id: string,
+    semester: string,
+    level: string,
+  ) => {
+    const { data } = await client
+      .from("results")
+      .select("*")
+      .eq("user_id", id)
+      .filter("level", "eq", level)
+      .filter("semester", "eq", semester)
+      .single();
+    return data;
+  };
+
+  const saveStudentResult = async (result: any) => {
+    const { error } = await client.from("results").upsert(result);
+    if (!error) {
+      toast.add({
+        title: "Success",
+        description: "Result updated successfully",
+        icon: "i-heroicons-check-circle",
+        color: "primary",
+      });
+      return true;
+    }
+    if (error) {
+      return false;
+    }
+  };
+
+  return {
+    fetchStudentByMatricNo,
+    fetchStudentById,
+    fetchStudentCourseBySession,
+    fetchStudentResult,
+    saveStudentResult,
+  };
 };

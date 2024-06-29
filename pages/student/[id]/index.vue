@@ -1,6 +1,6 @@
 <template>
   <main class="bg-white min-h-screen w-full pr-5">
-    <div v-if="!pending" class="flex flex-col py-10 gap-10">
+    <div v-if="!pending && student" class="flex flex-col py-10 gap-10">
       <div
         class="flex flex-col items-center gap-3 text-center border border-gray-300 rounded-md p-4 cover-bg"
       >
@@ -69,6 +69,7 @@
             <div v-for="(session, index) in academicSessions" :key="index">
               <button
                 class="p-2 border-b-2 border-gray-200 w-full hover:bg-gray-200 text-left flex items-center justify-between rounded"
+                @click="openStudentResultPage(session)"
               >
                 <p>{{ session.level }}L | {{ session.semester }} Semester</p>
                 <UIcon name="i-heroicons-pencil-square" />
@@ -90,6 +91,7 @@ definePageMeta({
 const { fetchStudentById } = useStudent();
 const toast = useToast();
 const route = useRoute();
+const router = useRouter();
 const studentId = route.params.id as string;
 
 const { data, error, pending } = await useAsyncData("a student", async () => {
@@ -204,11 +206,17 @@ const expectedGraduationYear = computed(() => {
   }
   return student.value.year_of_admission + year;
 });
+
+const openStudentResultPage = (session: any) => {
+  router.push(
+    `/student/${studentId}/result?level=${session.level}&semester=${session.semester}`,
+  );
+};
 </script>
 
 <style scoped>
 .cover-bg {
-  background-image: url("../../assets/images/cover.jpg");
+  background-image: url("../../../assets/images/cover.jpg");
   background-position: center;
   background-size: cover;
   background-repeat: no-repeat;
