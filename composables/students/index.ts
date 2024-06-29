@@ -44,7 +44,7 @@ export const useStudent = () => {
       .eq("id", id)
       .single();
     if (data) {
-      return data;
+      return data as User;
     } else {
       toast.add({
         title: "Error",
@@ -55,5 +55,32 @@ export const useStudent = () => {
     }
   };
 
-  return { fetchStudentByMatricNo, fetchStudentById };
+  const fetchStudentCourseBySession = async (
+    id: string,
+    semester: string,
+    level: string,
+  ) => {
+    const { data } = await client
+      .from("student_courses")
+      .select("*")
+      .eq("user_id", id)
+      .filter("level", "eq", level)
+      .filter("semester", "eq", semester);
+    if (data) {
+      return data;
+    } else {
+      toast.add({
+        title: "Error",
+        description: "Something went wrong, pls try again",
+        icon: "i-heroicons-x-circle",
+        color: "red",
+      });
+    }
+  };
+
+  return {
+    fetchStudentByMatricNo,
+    fetchStudentById,
+    fetchStudentCourseBySession,
+  };
 };

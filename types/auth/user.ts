@@ -24,4 +24,6 @@ export interface User {
   department?: departmentType;
   faculty?: facultyType;
   cert?: Certificate;
+  year_of_admission?: number;
+  email: string;
 }
