@@ -8,7 +8,7 @@ export enum UserTypes {
 }
 
 export interface Certificate {
-  id: String;
+  id: String | number;
   name: String;
   full_name: String;
 }
@@ -20,7 +20,7 @@ export interface User {
   first_name: String;
   last_name: String;
   created_at?: String;
-  level?: String;
+  level?: String | number;
   department?: departmentType;
   faculty?: facultyType;
   cert?: Certificate;

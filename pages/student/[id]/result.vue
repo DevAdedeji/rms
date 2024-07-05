@@ -35,7 +35,7 @@
           </span>
         </p>
       </div>
-      <UTable :rows="courses" :loading="pending" :columns="columns">
+      <UTable :rows="courses" :loading="fetchingCourses" :columns="columns">
         <template #sn-data="{ index }">
           <p>{{ index + 1 }}</p>
         </template>
@@ -70,7 +70,11 @@
           <UTable :rows="[result]" :columns="semesterResultColumn" />
         </div>
         <div class="flex items-center justify-end">
-          <UButton class="mt-10 px-6 py-4" @click="handleSaving">
+          <UButton
+            class="mt-10 px-6 py-4"
+            :loading="savingResult"
+            @click="handleSaving"
+          >
             Save Result
           </UButton>
         </div>
@@ -103,10 +107,13 @@ const route = useRoute();
 // const router = useRouter();
 const studentId = route.params.id as string;
 
-const { data, error, pending } = await useAsyncData("a student", async () => {
-  const student = await fetchStudentById(studentId);
-  return student;
-});
+const { data, error, pending } = await useAsyncData(
+  "a student result",
+  async () => {
+    const student = await fetchStudentById(studentId);
+    return student;
+  },
+);
 if (error.value) {
   toast.add({
     title: "Error",
@@ -180,8 +187,9 @@ const session = ref({
 });
 
 const courses = ref([]);
-
+const fetchingCourses = ref(true);
 const fetchCourses = async () => {
+  fetchingCourses.value = true;
   const fetchedCourses = await fetchStudentCourseBySession(
     studentId,
     session.value.semester,
@@ -190,6 +198,7 @@ const fetchCourses = async () => {
   if (fetchedCourses) {
     courses.value = fetchedCourses;
   }
+  fetchingCourses.value = false;
 };
 
 const handleScoreChange = (row: any) => {
@@ -242,6 +251,7 @@ const formatCoursesAsResult = () => {
         level: Number(session.value.level),
         semester: session.value.semester,
         user_id: studentId,
+        student: student.value,
         total_point: totalPoint,
         total_point_scored: totalPointScored,
         total_unit: totalUnit,
@@ -255,6 +265,7 @@ const formatCoursesAsResult = () => {
         level: Number(session.value.level),
         semester: session.value.semester,
         user_id: studentId,
+        student: student.value,
         total_point: totalPoint,
         total_point_scored: totalPointScored,
         total_unit: totalUnit,
@@ -264,8 +275,11 @@ const formatCoursesAsResult = () => {
       };
 };
 
+const savingResult = ref(false);
 const handleSaving = async () => {
+  savingResult.value = true;
   const saved = await saveStudentResult(result.value);
+  savingResult.value = false;
   if (saved) {
     resultSaved.value = true;
   } else {

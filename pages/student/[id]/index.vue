@@ -26,11 +26,11 @@
                 <UIcon name="i-heroicons-envelope" />
                 <p>{{ student.email }}</p>
               </div>
-              <div class="flex items-center gap-2">
+              <div v-if="student.faculty" class="flex items-center gap-2">
                 <UIcon name="i-heroicons-building-library" />
                 <p>{{ student.faculty.name }}</p>
               </div>
-              <div class="flex items-center gap-2">
+              <div v-if="student.department" class="flex items-center gap-2">
                 <UIcon name="i-heroicons-building-office" />
                 <p>{{ student.department.name }}</p>
               </div>
@@ -68,11 +68,13 @@
             </template>
             <div v-for="(session, index) in academicSessions" :key="index">
               <button
-                class="p-2 border-b-2 border-gray-200 w-full hover:bg-gray-200 text-left flex items-center justify-between rounded"
+                class="p-4 border-b-2 border-gray-200 w-full hover:bg-gray-200 text-left flex items-center justify-between rounded"
+                :class="session.active ? '' : 'opacity-50 cursor-not-allowed'"
+                :disabled="!session.active"
                 @click="openStudentResultPage(session)"
               >
                 <p>{{ session.level }}L | {{ session.semester }} Semester</p>
-                <UIcon name="i-heroicons-pencil-square" />
+                <UIcon name="i-heroicons-chevron-right" />
               </button>
             </div>
           </UCard>
@@ -116,95 +118,86 @@ const name = computed(() =>
 );
 
 const academicSessions = computed(() => {
-  if (student.value.cert.id === 1) {
-    return [
-      {
-        level: 100,
-        semester: "rain",
-      },
-      {
-        level: 100,
-        semester: "harmattan",
-      },
-      {
-        level: 200,
-        semester: "rain",
-      },
-      {
-        level: 200,
-        semester: "harmattan",
-      },
-      {
-        level: 300,
-        semester: "rain",
-      },
-      {
-        level: 300,
-        semester: "harmattan",
-      },
-      {
-        level: 400,
-        semester: "rain",
-      },
-      {
-        level: 400,
-        semester: "harmattan",
-      },
-      {
-        level: 500,
-        semester: "rain",
-      },
-      {
-        level: 500,
-        semester: "harmattan",
-      },
-    ];
+  const baseSessions = [
+    {
+      level: 100,
+      semester: "harmattan",
+    },
+    {
+      level: 100,
+      semester: "rain",
+    },
+    {
+      level: 200,
+      semester: "harmattan",
+    },
+    {
+      level: 200,
+      semester: "rain",
+    },
+    {
+      level: 300,
+      semester: "harmattan",
+    },
+    {
+      level: 300,
+      semester: "rain",
+    },
+    {
+      level: 400,
+      semester: "harmattan",
+    },
+    {
+      level: 400,
+      semester: "rain",
+    },
+  ];
+
+  const extendedSessions = [
+    ...baseSessions,
+    {
+      level: 500,
+      semester: "harmattan",
+    },
+    {
+      level: 500,
+      semester: "rain",
+    },
+  ];
+
+  if (student.value && student.value.cert && student.value.level) {
+    const sessions =
+      student.value.cert.id === 1 ? extendedSessions : baseSessions;
+
+    // Ensure that student.value.level is a number
+    const studentLevel =
+      typeof student.value.level === "number"
+        ? student.value.level
+        : Number(student.value.level);
+
+    return sessions.map((session) => ({
+      ...session,
+      active: session.level <= studentLevel,
+    }));
   } else {
-    return [
-      {
-        level: 100,
-        semester: "rain",
-      },
-      {
-        level: 100,
-        semester: "harmattan",
-      },
-      {
-        level: 200,
-        semester: "rain",
-      },
-      {
-        level: 200,
-        semester: "harmattan",
-      },
-      {
-        level: 300,
-        semester: "rain",
-      },
-      {
-        level: 300,
-        semester: "harmattan",
-      },
-      {
-        level: 400,
-        semester: "rain",
-      },
-      {
-        level: 400,
-        semester: "harmattan",
-      },
-    ];
+    return extendedSessions.map((session) => ({
+      ...session,
+      active: false,
+    }));
   }
 });
 
 const expectedGraduationYear = computed(() => {
   let year;
-  if (student.value.cert.id === 1) {
-    year = 5;
-  } else {
-    year = 4;
+  if (student.value && student.value.cert && student.value.year_of_admission) {
+    if (student.value.cert.id === 1) {
+      year = 5;
+    } else {
+      year = 4;
+    }
+    return student.value.year_of_admission + year;
   }
-  return student.value.year_of_admission + year;
+  return "N/A";
 });
 
 const openStudentResultPage = (session: any) => {
