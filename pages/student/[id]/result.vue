@@ -26,12 +26,12 @@
           <span
             class="px-2 py-[2px] rounded"
             :class="
-              result.approved
+              resultApproved
                 ? 'bg-[#D1FFD1] text-[#008000]'
                 : 'bg-[#FCE3EA] text-[#ED4C78]'
             "
           >
-            {{ result.approved ? "Approved" : "Unapproved" }}
+            {{ resultApproved ? "Approved" : "Unapproved" }}
           </span>
         </p>
       </div>
@@ -62,14 +62,14 @@
           <UInput v-model="row.point" disabled class="w-[50px]" />
         </template>
       </UTable>
-      <div v-if="resultFormatted">
+      <div v-if="resultFormatted || (isAdmin && resultFound)">
         <p class="text-2xl font-semibold text-gray-600 capitalize pb-2">
           {{ session.semester }} Semester Result
         </p>
         <div class="w-1/2">
           <UTable :rows="[result]" :columns="semesterResultColumn" />
         </div>
-        <div class="flex items-center justify-end">
+        <div v-if="!isAdmin" class="flex items-center justify-end">
           <UButton
             class="mt-10 px-6 py-4"
             :loading="savingResult"
@@ -80,11 +80,34 @@
         </div>
       </div>
       <UButton
-        v-if="!resultFormatted"
+        v-if="!resultFormatted && !isAdmin"
         class="ml-auto self-start px-6 py-4"
         @click="handleFormatCoursesAsResult"
         >Update</UButton
       >
+      <div
+        v-if="isAdmin && resultFound"
+        class="flex items-center justify-center"
+      >
+        <UButton
+          v-if="!resultApproved"
+          class="px-6 py-4"
+          color="red"
+          :loading="updatingResult"
+          @click="handleApproveResult"
+        >
+          Approve Result
+        </UButton>
+        <UButton
+          v-else
+          class="px-6 py-4"
+          color="red"
+          :loading="updatingResult"
+          @click="handleUnapproveResult"
+        >
+          Disapprove Result
+        </UButton>
+      </div>
     </div>
   </main>
 </template>
@@ -103,7 +126,8 @@ const {
 const { calculateGrade, calculatePoint, calculateClass } = useCalculator();
 const toast = useToast();
 const route = useRoute();
-// const { getUser } = useUser();
+const { getUser } = useUser();
+const { toggleResult, updatingResult } = useResults();
 // const router = useRouter();
 const studentId = route.params.id as string;
 
@@ -124,6 +148,8 @@ if (error.value) {
 }
 
 const student = computed(() => data.value);
+const user = getUser();
+const isAdmin = computed(() => user.role === "school_admin");
 
 const name = computed(() =>
   student.value
@@ -204,6 +230,7 @@ const fetchCourses = async () => {
 const handleScoreChange = (row: any) => {
   row.grade = calculateGrade(row.score);
   row.point = calculatePoint(row.grade, row.unit);
+  resultFormatted.value = false;
 };
 
 const result = ref({});
@@ -211,6 +238,7 @@ const resultId = ref(null);
 const resultFound = ref(false);
 const resultFormatted = ref(false);
 const resultSaved = ref(false);
+const resultApproved = ref(false);
 
 const handleFormatCoursesAsResult = () => {
   formatCoursesAsResult();
@@ -256,7 +284,7 @@ const formatCoursesAsResult = () => {
         total_point_scored: totalPointScored,
         total_unit: totalUnit,
         gpa,
-        approved: false,
+        approved: resultApproved.value,
         class: gpaClass,
         id: resultId.value,
       }
@@ -286,6 +314,16 @@ const handleSaving = async () => {
     resultSaved.value = false;
   }
 };
+const handleApproveResult = async () => {
+  result.value.approved = true;
+  await toggleResult(result.value);
+  await getDetails();
+};
+const handleUnapproveResult = async () => {
+  result.value.approved = false;
+  await toggleResult(result.value);
+  await getDetails();
+};
 
 const formatCoursesIfResult = (result: any) => {
   const fetchedCourses = result.courses;
@@ -302,24 +340,29 @@ const formatCoursesIfResult = (result: any) => {
   formatCoursesAsResult();
 };
 
+const getDetails = async () => {
+  session.value.level = route.query.level as string;
+  session.value.semester = route.query.semester as string;
+  const result: any = await fetchStudentResult(
+    studentId,
+    session.value.semester,
+    session.value.level,
+  );
+  await fetchCourses();
+  if (result) {
+    resultFound.value = true;
+    resultId.value = result.id;
+    resultApproved.value = result.approved;
+    formatCoursesIfResult(result);
+  } else {
+    resultFound.value = false;
+  }
+};
+
 watch(
   () => route,
   async () => {
-    session.value.level = route.query.level as string;
-    session.value.semester = route.query.semester as string;
-    const result: any = await fetchStudentResult(
-      studentId,
-      session.value.semester,
-      session.value.level,
-    );
-    await fetchCourses();
-    if (result) {
-      resultFound.value = true;
-      resultId.value = result.id;
-      formatCoursesIfResult(result);
-    } else {
-      resultFound.value = false;
-    }
+    await getDetails();
   },
   { immediate: true },
 );
