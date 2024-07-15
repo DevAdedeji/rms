@@ -3,6 +3,31 @@ export const useResults = () => {
   const toast = useToast();
   const updatingResult = ref(false);
 
+  const searchForSemesterResult = async (
+    studentId: string,
+    semester: string,
+    level: number,
+  ) => {
+    const { data, error } = await client
+      .from("results")
+      .select("*")
+      .filter("user_id", "eq", studentId)
+      .filter("semester", "eq", semester)
+      .filter("level", "eq", level);
+
+    if (data) {
+      return data;
+    }
+    if (error) {
+      toast.add({
+        title: "Error",
+        description: error.message || "Couldn't fetch result",
+        icon: "i-heroicons-x-circle",
+        color: "red",
+      });
+    }
+  };
+
   const fetchUnapprovedResult = async () => {
     const { data, error } = await client
       .from("results")
@@ -41,7 +66,14 @@ export const useResults = () => {
         color: "primary",
       });
     }
+
+    updatingResult.value = false;
   };
 
-  return { fetchUnapprovedResult, updatingResult, toggleResult };
+  return {
+    fetchUnapprovedResult,
+    updatingResult,
+    toggleResult,
+    searchForSemesterResult,
+  };
 };

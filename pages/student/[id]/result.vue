@@ -233,7 +233,7 @@ const handleScoreChange = (row: any) => {
   resultFormatted.value = false;
 };
 
-const result = ref({});
+const result = ref<any>({});
 const resultId = ref(null);
 const resultFound = ref(false);
 const resultFormatted = ref(false);
@@ -316,6 +316,7 @@ const handleSaving = async () => {
 };
 const handleApproveResult = async () => {
   result.value.approved = true;
+  result.value.approved_by = user.id;
   await toggleResult(result.value);
   await getDetails();
 };
