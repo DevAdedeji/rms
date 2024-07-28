@@ -60,7 +60,7 @@ export const useAddExamOfficer = () => {
           title: "Success",
           description: "Exam Officer added successfully",
           icon: "i-heroicons-check-circle",
-          color: "primary",
+          color: "green",
         });
       } else {
         toast.add({
@@ -136,7 +136,7 @@ export const useUpdateExamOfficer = () => {
         title: "Success",
         description: "Exam Officer info updated successfully",
         icon: "i-heroicons-check-circle",
-        color: "primary",
+        color: "green",
       });
       return data;
     }
@@ -161,7 +161,7 @@ const deleted = ref(false);
 export const useDeleteExamOfficer = () => {
   const client = useSupabaseClient();
   const toast = useToast();
-  const deleteExamOfficer = async (id: string) => {
+  const deleteExamOfficer = async (id: String) => {
     deleting.value = true;
     deleted.value = false;
     const { error } = await client.from("user_profiles").delete().eq("id", id);
@@ -178,7 +178,7 @@ export const useDeleteExamOfficer = () => {
         title: "Success",
         description: "Exam officer deleted successfully",
         icon: "i-heroicons-check-circle",
-        color: "primary",
+        color: "green",
       });
       deleted.value = true;
     }

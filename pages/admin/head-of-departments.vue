@@ -62,10 +62,13 @@
           <p>{{ row.department.name }}</p>
         </template>
         <template #actions-data="{ row }">
-          <div class="flex items-center gap-2">
-            <UButton @click="openEditModal(row)">Edit</UButton>
-            <UButton color="red" @click="deleteOfficer(row.id)">Delete</UButton>
-          </div>
+          <UDropdown :items="items(row)">
+            <UButton
+              color="gray"
+              variant="ghost"
+              icon="i-heroicons-ellipsis-horizontal-20-solid"
+            />
+          </UDropdown>
         </template>
       </UTable>
     </div>
@@ -75,6 +78,12 @@
       @updated="HODInfoUpdated = true"
     />
     <LazyAdminAddNewHOD v-model="showAddHODModal" />
+    <LazyAdminUpdatePassword
+      v-if="selectedHOD"
+      v-model="showUpdateHODPassword"
+      :user-id="selectedHOD.id"
+      @updated="HODInfoUpdated = true"
+    />
   </main>
 </template>
 
@@ -120,17 +129,48 @@ const columns = [
     key: "actions",
   },
 ];
+const items = (row: User) => [
+  [
+    {
+      label: "Edit",
+      icon: "i-heroicons-pencil-square-20-solid",
+      click: () => {
+        openEditModal(row);
+      },
+    },
+    {
+      label: "Delete",
+      icon: "i-heroicons-trash-20-solid",
+      click: () => {
+        deleteOfficer(row.id);
+      },
+    },
+    {
+      label: "Update Password",
+      icon: "i-heroicons-pencil-square-20-solid",
+      click: () => {
+        openUpdatePasswordModal(row);
+      },
+    },
+  ],
+];
 const showAddHODModal = ref(false);
 const showEditHODModal = ref(false);
-const selectedHOD = ref(null);
+const showUpdateHODPassword = ref(false);
+const selectedHOD = ref<User | null>(null);
 const HODInfoUpdated = ref(false);
 
-const openEditModal = (row: any) => {
+const openEditModal = (row: User) => {
   selectedHOD.value = row;
   showEditHODModal.value = true;
 };
 
-const deleteOfficer = async (id: string) => {
+const openUpdatePasswordModal = (row: User) => {
+  selectedHOD.value = row;
+  showUpdateHODPassword.value = true;
+};
+
+const deleteOfficer = async (id: String) => {
   await deleteHOD(id);
 };
 

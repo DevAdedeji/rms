@@ -23,7 +23,7 @@ export const useUpdateFaculty = () => {
         title: "Success",
         description: "Faculty updated successfully",
         icon: "i-heroicons-check-circle",
-        color: "primary",
+        color: "green",
       });
       return data;
     }
@@ -56,7 +56,7 @@ export const useAddFaculty = () => {
         title: "Success",
         description: "Faculty created successfully",
         icon: "i-heroicons-check-circle",
-        color: "primary",
+        color: "green",
       });
       return data;
     }
@@ -97,7 +97,7 @@ export const useDeleteFaculty = () => {
         title: "Success",
         description: "Faculty deleted successfully",
         icon: "i-heroicons-check-circle",
-        color: "primary",
+        color: "green",
       });
       deleted.value = true;
       deleting.value = false;
