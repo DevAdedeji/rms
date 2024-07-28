@@ -3,7 +3,7 @@ email: devadedejimedia@gmail.com
 password: adedeji9233
 
 HOD Login
-email: devadedejimedia+@gmail.com
+email: kudiraise@gmail.com
 Password: hod9233
 
 
