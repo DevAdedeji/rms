@@ -14,16 +14,16 @@ export const useHODs = () => {
   return { fetchAllHODs };
 };
 
+const added = ref(false);
+const adding = ref(false);
 export const useAddHOD = () => {
   const client = useSupabaseClient();
   const toast = useToast();
   const { addUserToProfiles, getUserByEmail } = useUser();
-  const adding = ref(false);
-  const added = ref(false);
 
   const addHOD = async (form: OfficersFormType) => {
     adding.value = true;
-    const { data, error } = await client.auth.signUp({
+    const { data, error } = await client.auth.admin.createUser({
       email: form.email,
       password: form.password,
     });
@@ -58,7 +58,8 @@ export const useAddHOD = () => {
     if (error) {
       if (
         error.status === 422 &&
-        error.message.toLowerCase() === "user already registered"
+        error.message.toLowerCase() ===
+          "a user with this email address has already been registered"
       ) {
         const user = await getUserByEmail(form.email);
         if (user) {
@@ -104,11 +105,11 @@ export const useAddHOD = () => {
   return { addHOD, adding, added };
 };
 
+const updating = ref(false);
+const updated = ref(false);
 export const useUpdateHOD = () => {
   const client = useSupabaseClient();
   const toast = useToast();
-  const updating = ref(false);
-  const updated = ref(false);
   const updateHOD = async (formData: any) => {
     updating.value = true;
     updated.value = false;
@@ -138,12 +139,14 @@ export const useUpdateHOD = () => {
   return { updateHOD, updated, updating };
 };
 
+const deleting = ref(false);
+const deleted = ref(false);
 export const useDeleteHOD = () => {
   const client = useSupabaseClient();
   const toast = useToast();
-  const deleted = ref(false);
   const deleteHOD = async (id: string) => {
     deleted.value = false;
+    deleting.value = true;
     const { error } = await client.from("user_profiles").delete().eq("id", id);
     if (error) {
       toast.add({
@@ -162,6 +165,7 @@ export const useDeleteHOD = () => {
       });
       deleted.value = true;
     }
+    deleting.value = false;
   };
 
   return { deleteHOD, deleted };
