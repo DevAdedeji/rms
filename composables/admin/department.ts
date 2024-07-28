@@ -30,7 +30,7 @@ export const useAddDepartment = () => {
         title: "Success",
         description: "Department created successfully",
         icon: "i-heroicons-check-circle",
-        color: "primary",
+        color: "green",
       });
       return data;
     }
@@ -63,7 +63,7 @@ export const useUpdateDepartment = () => {
         title: "Success",
         description: "Department updated successfully",
         icon: "i-heroicons-check-circle",
-        color: "primary",
+        color: "green",
       });
       return data;
     }
@@ -104,7 +104,7 @@ export const useDeleteDepartment = () => {
         title: "Success",
         description: "Department deleted successfully",
         icon: "i-heroicons-check-circle",
-        color: "primary",
+        color: "green",
       });
       deleted.value = true;
       deleting.value = false;

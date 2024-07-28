@@ -20,6 +20,12 @@ export const useAuth = () => {
     signingIn.value = false;
     if (data) {
       if (data.user && data.session) {
+        toast.add({
+          id: "user-log-in",
+          title: "Success",
+          description: "Logged In Successfully",
+          color: "green",
+        });
         const user = await fetchUserProfileDetails(data.user.id);
         if (user) {
           setUser(user);

@@ -44,7 +44,7 @@ export const useAddHOD = () => {
           title: "Success",
           description: "HOD added successfully",
           icon: "i-heroicons-check-circle",
-          color: "primary",
+          color: "green",
         });
       } else {
         toast.add({
@@ -119,7 +119,7 @@ export const useUpdateHOD = () => {
         title: "Success",
         description: "HOD info updated successfully",
         icon: "i-heroicons-check-circle",
-        color: "primary",
+        color: "green",
       });
       return data;
     }
@@ -144,7 +144,7 @@ const deleted = ref(false);
 export const useDeleteHOD = () => {
   const client = useSupabaseClient();
   const toast = useToast();
-  const deleteHOD = async (id: string) => {
+  const deleteHOD = async (id: String) => {
     deleted.value = false;
     deleting.value = true;
     const { error } = await client.from("user_profiles").delete().eq("id", id);
@@ -161,7 +161,7 @@ export const useDeleteHOD = () => {
         title: "Success",
         description: "User deleted successfully",
         icon: "i-heroicons-check-circle",
-        color: "primary",
+        color: "green",
       });
       deleted.value = true;
     }

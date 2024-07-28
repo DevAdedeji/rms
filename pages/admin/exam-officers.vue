@@ -30,10 +30,13 @@
           <p>{{ row.department.name }}</p>
         </template>
         <template #actions-data="{ row }">
-          <div class="flex items-center gap-2">
-            <UButton @click="openEditModal(row)">Edit</UButton>
-            <UButton color="red" @click="deleteOfficer(row.id)">Delete</UButton>
-          </div>
+          <UDropdown :items="items(row)">
+            <UButton
+              color="gray"
+              variant="ghost"
+              icon="i-heroicons-ellipsis-horizontal-20-solid"
+            />
+          </UDropdown>
         </template>
       </UTable>
     </div>
@@ -43,6 +46,12 @@
       @updated="examOfficerInfoUpdated = true"
     />
     <LazyAdminAddExamOfficer v-model="showAddExamOfficerModal" />
+    <LazyAdminUpdatePassword
+      v-if="selectedExamOfficer"
+      v-model="showUpdateExamOfficerPassword"
+      :user-id="selectedExamOfficer.id"
+      @updated="examOfficerInfoUpdated = true"
+    />
   </main>
 </template>
 
@@ -59,7 +68,8 @@ const { added } = useAddExamOfficer();
 const { deleteExamOfficer, deleted } = useDeleteExamOfficer();
 const showAddExamOfficerModal = ref(false);
 const showEditExamOfficerModal = ref(false);
-const selectedExamOfficer = ref(null);
+const showUpdateExamOfficerPassword = ref(false);
+const selectedExamOfficer = ref<User | null>(null);
 const examOfficerInfoUpdated = ref(false);
 
 const columns = [
@@ -84,14 +94,44 @@ const columns = [
   },
 ];
 
+const items = (row: User) => [
+  [
+    {
+      label: "Edit",
+      icon: "i-heroicons-pencil-square-20-solid",
+      click: () => {
+        openEditModal(row);
+      },
+    },
+    {
+      label: "Delete",
+      icon: "i-heroicons-trash-20-solid",
+      click: () => {
+        deleteOfficer(row.id);
+      },
+    },
+    {
+      label: "Update Password",
+      icon: "i-heroicons-pencil-square-20-solid",
+      click: () => {
+        openUpdatePasswordModal(row);
+      },
+    },
+  ],
+];
+
 const officers = ref<User[]>([]);
 
 const openEditModal = (row: any) => {
   selectedExamOfficer.value = row;
   showEditExamOfficerModal.value = true;
 };
-const deleteOfficer = async (id: string) => {
+const deleteOfficer = async (id: String) => {
   await deleteExamOfficer(id);
+};
+const openUpdatePasswordModal = (row: User) => {
+  selectedExamOfficer.value = row;
+  showUpdateExamOfficerPassword.value = true;
 };
 
 const { data, error, pending } = await useAsyncData(
