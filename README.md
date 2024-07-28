@@ -9,7 +9,7 @@ Password: hod9233
 
 Exam officer Login
 email: adedejitewogbade2+@gmail.com
-password: tunde1
+password: tunde123
 
 Student Login
 matric no: 191111
