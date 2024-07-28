@@ -75,12 +75,12 @@
 <script setup lang="ts">
 import { type facultyType } from "~/types/faculty";
 import { type departmentType } from "~/types/department";
-import { type ExamOfficerFormType } from "~/types/admin";
+import { type OfficersFormType } from "~/types/admin";
 const emits = defineEmits(["added"]);
 const model = defineModel({ type: Boolean, default: false });
-const { addExamOfficer, adding, added } = useExamOfficers();
+const { addExamOfficer, adding, added } = useAddExamOfficer();
 
-const form = ref<ExamOfficerFormType>({
+const form = ref<OfficersFormType>({
   faculty: null,
   department: null,
   first_name: "",

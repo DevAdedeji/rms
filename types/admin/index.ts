@@ -1,7 +1,7 @@
 import { type facultyType } from "../faculty";
 import { type departmentType } from "../department";
 
-export interface ExamOfficerFormType {
+export interface OfficersFormType {
   faculty: facultyType | null;
   department: departmentType | null;
   first_name: string;

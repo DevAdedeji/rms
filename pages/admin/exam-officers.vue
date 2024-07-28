@@ -37,12 +37,12 @@
         </template>
       </UTable>
     </div>
-    <LazyEditExamOfficer
+    <LazyAdminEditExamOfficer
       v-model="showEditExamOfficerModal"
-      :exam_officer="selectedExamOfficer"
+      :exam-officer="selectedExamOfficer"
       @updated="examOfficerInfoUpdated = true"
     />
-    <LazyAddExamOfficer v-model="showAddExamOfficerModal" />
+    <LazyAdminAddExamOfficer v-model="showAddExamOfficerModal" />
   </main>
 </template>
 
@@ -54,8 +54,9 @@ definePageMeta({
   middleware: ["auth"],
 });
 const toast = useToast();
-const { fetchExamOfficers, added, deleteExamOfficer, deleted } =
-  useExamOfficers();
+const { fetchExamOfficers } = useExamOfficers();
+const { added } = useAddExamOfficer();
+const { deleteExamOfficer, deleted } = useDeleteExamOfficer();
 const showAddExamOfficerModal = ref(false);
 const showEditExamOfficerModal = ref(false);
 const selectedExamOfficer = ref(null);

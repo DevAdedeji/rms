@@ -24,7 +24,7 @@ export const useAuth = () => {
         if (user) {
           setUser(user);
           if (user.role === UserTypes.school) {
-            return navigateTo("/school/dashboard");
+            return navigateTo("/admin/faculties");
           } else if (user.role === UserTypes.faculty) {
             return navigateTo("/exam-officer/dashboard");
           } else {
@@ -73,6 +73,7 @@ export const useAuth = () => {
 
 export const useUser = () => {
   const client = useSupabaseClient();
+  const toast = useToast();
 
   const fetchUserProfileDetails = async (id: String) => {
     const { data } = await client
@@ -98,5 +99,46 @@ export const useUser = () => {
   const setUser = (user: any) => {
     localStorage.setItem("user_profile", JSON.stringify(user));
   };
-  return { fetchUserProfileDetails, setUser, getUser };
+
+  const addUserToProfiles = async (userInfo: any) => {
+    const { error } = await client.from("user_profiles").upsert(userInfo);
+    if (error) {
+      return false;
+    } else {
+      return true;
+    }
+  };
+
+  const getUserByEmail = async (email: string) => {
+    const { data, error } = await client.auth.admin.listUsers();
+    if (data && data.users) {
+      const users = data.users;
+      const user = users.find((user) => user.email === email);
+      if (user) {
+        return user;
+      } else {
+        toast.add({
+          title: "Error",
+          description: "Please contact IT Support",
+          icon: "i-heroicons-x-circle",
+          color: "red",
+        });
+      }
+    } else {
+      toast.add({
+        title: "Error",
+        description: error?.message || "Something went wrong, pls try again",
+        icon: "i-heroicons-x-circle",
+        color: "red",
+      });
+    }
+  };
+
+  return {
+    fetchUserProfileDetails,
+    setUser,
+    getUser,
+    addUserToProfiles,
+    getUserByEmail,
+  };
 };

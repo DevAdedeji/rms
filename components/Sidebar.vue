@@ -38,34 +38,24 @@ const links = computed(() => {
     if (userProfile.value.role === UserTypes.school) {
       return [
         {
-          label: "Dashboard",
-          icon: "i-heroicons-home-solid",
-          route: "/school/dashboard",
-        },
-        {
-          label: "Exam Officers",
-          icon: "i-heroicons-user-circle-solid",
-          route: "/exam-officers",
-        },
-        {
-          label: "Results Approval",
-          icon: "i-heroicons-cursor-arrow-ripple-solid",
-          route: "/school/result-approval",
-        },
-        {
           label: "Faculties",
           icon: "i-heroicons-building-library-solid",
-          route: "/faculties",
+          route: "/admin/faculties",
         },
         {
           label: "Departments",
           icon: "i-heroicons-building-office-solid",
-          route: "/departments",
+          route: "/admin/departments",
         },
         {
-          label: "Students",
-          icon: "i-heroicons-user-group-solid",
-          route: "/school/students",
+          label: "H.O.D(s)",
+          icon: "i-heroicons-user-circle-solid",
+          route: "/admin/head-of-departments",
+        },
+        {
+          label: "Exam Officers",
+          icon: "i-heroicons-user-solid",
+          route: "/admin/exam-officers",
         },
       ];
     }

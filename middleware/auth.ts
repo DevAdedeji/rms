@@ -11,7 +11,7 @@ export default defineNuxtRouteMiddleware((to, _from) => {
   } else if (user.value) {
     if (userProfile) {
       if (userProfile?.role === UserTypes.school) {
-        return navigateTo("/school/dashboard");
+        return navigateTo("/admin/faculties");
       } else if (userProfile?.role === UserTypes.faculty) {
         return navigateTo("/exam-officer/dashboard");
       } else {
@@ -24,7 +24,7 @@ export default defineNuxtRouteMiddleware((to, _from) => {
       return navigateTo("/auth/login");
     } else if (userProfile) {
       if (userProfile?.role === UserTypes.school) {
-        return navigateTo("/school/dashboard");
+        return navigateTo("/admin/faculties");
       } else if (userProfile?.role === UserTypes.faculty) {
         return navigateTo("/exam-officer/dashboard");
       } else {
