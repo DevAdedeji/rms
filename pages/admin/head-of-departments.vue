@@ -178,6 +178,8 @@ const { data, error, pending } = await useAsyncData(
   "headOfDepartments",
   async () => {
     const headOfDepartments = await fetchAllHODs();
+    added.value = false;
+    HODInfoUpdated.value = false;
     return headOfDepartments;
   },
   { watch: [HODInfoUpdated, deleted, added] },

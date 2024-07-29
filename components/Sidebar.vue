@@ -81,8 +81,13 @@ const links = computed(() => {
           route: "/exam-officer/dashboard",
         },
         {
+          label: "Lecturers",
+          icon: "i-heroicons-user-solid",
+          route: "/exam-officer/lecturers",
+        },
+        {
           label: "Students",
-          icon: "i-heroicons-calendar-days-solid",
+          icon: "i-heroicons-user-circle-solid",
           route: "/exam-officer/students",
         },
       ];

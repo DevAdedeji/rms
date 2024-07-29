@@ -6,6 +6,7 @@ export enum UserTypes {
   faculty = "exam_officer",
   school = "school_admin",
   hod = "hod",
+  lecturer = "lecturer",
 }
 
 export interface Certificate {
