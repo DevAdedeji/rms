@@ -11,11 +11,18 @@
           placeholder="Search student"
           class="w-2/5"
         />
-        <USelectMenu
-          v-model="levelSelected"
-          :options="levelFilterOptions"
-          placeholder="Filter by Level"
-        />
+        <div class="flex items-center gap-6">
+          <USelectMenu
+            v-model="levelSelected"
+            :options="levelFilterOptions"
+            placeholder="Filter by Level"
+          />
+          <UButton
+            icon="i-heroicons-plus-solid"
+            @click="showAddStudentModal = true"
+            >Add New Student</UButton
+          >
+        </div>
       </div>
       <UTable
         :rows="filteredRows"
@@ -44,6 +51,7 @@ definePageMeta({
 const toast = useToast();
 const router = useRouter();
 const { fetchExamOfficerStudent } = useExamOfficers();
+const showAddStudentModal = ref(false);
 
 const q = ref("");
 const columns = [
