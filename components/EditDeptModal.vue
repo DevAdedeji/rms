@@ -22,7 +22,13 @@
           <UInput v-model="form.name" placeholder="Enter department name" />
         </UFormGroup>
         <div class="flex justify-end">
-          <UButton type="submit" class="px-6" :loading="updating">Save</UButton>
+          <UButton
+            type="submit"
+            class="px-6"
+            :loading="updating"
+            :disabled="updating"
+            >Save</UButton
+          >
         </div>
       </form>
     </UCard>
