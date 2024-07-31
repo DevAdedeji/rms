@@ -43,7 +43,7 @@
           <USelectMenu
             v-model="form.department"
             :options="departments"
-            placeholder="Filter by department"
+            placeholder="Select department"
             option-attribute="name"
             :loading="searching"
             required
