@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 import { type OfficersFormType } from "~/types/admin";
 import { UserTypes, type User } from "~/types/auth/user";
 
@@ -106,6 +107,55 @@ export const useAddLecturer = () => {
   };
 
   return { added, adding, addLecturer };
+};
+
+const signing_up = ref(false);
+const signed_up = ref(false);
+export const useSignUpLecturer = () => {
+  const client = useSupabaseClient();
+  const toast = useToast();
+  const { addUserToProfiles } = useUser();
+
+  const signUpLecturer = async (form: any) => {
+    signing_up.value = true;
+    const { data, error } = await client.auth.signUp({
+      email: form.email,
+      password: form.password,
+    });
+    if (data.user) {
+      form.id = data.user.id;
+      form.role = "lecturer";
+      delete form.password;
+      const result = await addUserToProfiles(form);
+      if (result) {
+        signed_up.value = true;
+        toast.add({
+          title: "Success",
+          description: "Account created successfully",
+          icon: "i-heroicons-check-circle",
+          color: "green",
+        });
+      } else {
+        toast.add({
+          title: "Error",
+          description: "Couldn't add Lecturer, pls try again later",
+          icon: "i-heroicons-x-circle",
+          color: "red",
+        });
+      }
+    }
+    if (error) {
+      toast.add({
+        title: "Error",
+        description: error.message || "Coudn't create account, pls try again",
+        icon: "i-heroicons-x-circle",
+        color: "red",
+      });
+    }
+    signing_up.value = false;
+  };
+
+  return { signing_up, signed_up, signUpLecturer };
 };
 
 const updating = ref(false);

@@ -41,6 +41,11 @@
                   "
                 />
               </UFormGroup>
+              <div class="flex justify-end">
+                <NuxtLink to="/auth/signup" class="text-sm text-red-500"
+                  >Create account?</NuxtLink
+                >
+              </div>
               <UButton
                 type="submit"
                 :loading="signingIn"
