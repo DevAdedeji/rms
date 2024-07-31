@@ -11,7 +11,7 @@
         <li
           v-for="link in links"
           :key="link.route"
-          class="hover:bg-gray-200 rounded-md w-full flex items-center"
+          class="hover:bg-gray-200 rounded-md w-full flex items-center py-2"
           :class="route.path === link.route ? 'bg-gray-200' : ''"
         >
           <NuxtLink
@@ -89,6 +89,11 @@ const links = computed(() => {
           label: "Students",
           icon: "i-heroicons-user-circle-solid",
           route: "/exam-officer/students",
+        },
+        {
+          label: "Courses",
+          icon: "i-heroicons-book-open-solid",
+          route: "/exam-officer/courses",
         },
       ];
     }

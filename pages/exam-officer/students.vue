@@ -17,11 +17,6 @@
             :options="levelFilterOptions"
             placeholder="Filter by Level"
           />
-          <UButton
-            icon="i-heroicons-plus-solid"
-            @click="showAddStudentModal = true"
-            >Add New Student</UButton
-          >
         </div>
       </div>
       <UTable
@@ -51,7 +46,6 @@ definePageMeta({
 const toast = useToast();
 const router = useRouter();
 const { fetchExamOfficerStudent } = useExamOfficers();
-const showAddStudentModal = ref(false);
 
 const q = ref("");
 const columns = [
