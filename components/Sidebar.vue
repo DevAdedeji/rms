@@ -57,6 +57,11 @@ const links = computed(() => {
           icon: "i-heroicons-user-solid",
           route: "/admin/exam-officers",
         },
+        {
+          label: "Student Promotion",
+          icon: "i-heroicons-forward-solid",
+          route: "/admin/promotion",
+        },
       ];
     }
     if (userProfile.value.role === UserTypes.student) {
