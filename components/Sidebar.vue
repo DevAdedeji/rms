@@ -15,7 +15,7 @@
           :class="route.path === link.route ? 'bg-gray-200' : ''"
         >
           <NuxtLink
-            class="w-full flex items-center gap-4 py-1 px-2"
+            class="w-full flex items-center text-sm gap-4 py-1 px-2"
             :to="link.route"
           >
             <UIcon :name="link.icon" />
@@ -67,14 +67,14 @@ const links = computed(() => {
     if (userProfile.value.role === UserTypes.student) {
       return [
         {
-          label: "Dashboard",
-          icon: "i-heroicons-home-solid",
-          route: "/student/dashboard",
-        },
-        {
           label: "Results",
           icon: "i-heroicons-calendar-days-solid",
           route: "/student/results",
+        },
+        {
+          label: "Course Registration",
+          icon: "i-heroicons-book-open-solid",
+          route: "/student/courses/register",
         },
       ];
     }

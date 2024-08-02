@@ -25,15 +25,6 @@ export const useAddCourse = () => {
   const addCourse = async (form: any) => {
     adding.value = true;
     const { data, error } = await client.from("courses").upsert(form);
-    if (data) {
-      toast.add({
-        title: "Success",
-        description: "Course added successfully",
-        icon: "i-heroicons-check-circle",
-        color: "green",
-      });
-      added.value = true;
-    }
     if (error) {
       toast.add({
         title: "Error",
@@ -41,6 +32,14 @@ export const useAddCourse = () => {
         icon: "i-heroicons-x-circle",
         color: "red",
       });
+    } else {
+      toast.add({
+        title: "Success",
+        description: "Course added successfully",
+        icon: "i-heroicons-check-circle",
+        color: "green",
+      });
+      added.value = true;
     }
     adding.value = false;
   };
