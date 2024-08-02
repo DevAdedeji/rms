@@ -16,6 +16,8 @@ ismaila@gmail.com
 ismaila123
 olabiyisi@gmail.com
 olabiyisi123
+adeyemo@gmail.com
+adeyemo123
 
 Student Login
 matric no: 191111
