@@ -147,6 +147,7 @@ const { data, error, pending, refresh } = await useAsyncData(
   "courses",
   async () => {
     const courses = await fetchCourses();
+    added.value = false;
     return courses;
   },
   { watch: [added, deleted] },

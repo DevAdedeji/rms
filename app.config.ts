@@ -20,5 +20,8 @@ export default defineAppConfig({
     select: {
       base: "!h-[40px]",
     },
+    modal: {
+      container: "flex md:!min-h-full !items-center !justify-center",
+    },
   },
 });

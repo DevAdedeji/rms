@@ -34,7 +34,7 @@ export const useAuth = () => {
           } else if (user.role === UserTypes.faculty) {
             return navigateTo("/exam-officer/dashboard");
           } else {
-            return navigateTo("/student/dashboard");
+            return navigateTo("/student/results");
           }
         } else {
           toast.add({
