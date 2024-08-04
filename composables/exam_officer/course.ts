@@ -24,7 +24,7 @@ export const useAddCourse = () => {
 
   const addCourse = async (form: any) => {
     adding.value = true;
-    const { data, error } = await client.from("courses").upsert(form);
+    const { error } = await client.from("courses").upsert(form);
     if (error) {
       toast.add({
         title: "Error",

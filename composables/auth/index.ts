@@ -33,8 +33,10 @@ export const useAuth = () => {
             return navigateTo("/admin/faculties");
           } else if (user.role === UserTypes.faculty) {
             return navigateTo("/exam-officer/dashboard");
-          } else {
+          } else if (user.role === UserTypes.student) {
             return navigateTo("/student/results");
+          } else {
+            return navigateTo("/lecturer/courses");
           }
         } else {
           toast.add({

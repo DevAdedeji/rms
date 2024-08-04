@@ -83,6 +83,15 @@ const links = computed(() => {
         },
       ];
     }
+    if (userProfile.value.role === UserTypes.lecturer) {
+      return [
+        {
+          label: "Courses",
+          icon: "i-heroicons-book-open-solid",
+          route: "/lecturer/courses",
+        },
+      ];
+    }
     if (userProfile.value.role === UserTypes.faculty) {
       return [
         {
