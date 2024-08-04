@@ -50,12 +50,12 @@ const student = getUser();
 
 const semesterOptions = ref([
   {
-    value: "rain",
-    label: "Rain Semester",
-  },
-  {
     value: "harmattan",
     label: "Harmattan Semester",
+  },
+  {
+    value: "rain",
+    label: "Rain Semester",
   },
 ]);
 

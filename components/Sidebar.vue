@@ -72,7 +72,12 @@ const links = computed(() => {
           route: "/student/results",
         },
         {
-          label: "Course Registration",
+          label: "Registered Courses",
+          icon: "i-heroicons-bookmark-square-solid",
+          route: "/student/courses/history",
+        },
+        {
+          label: "Register Courses",
           icon: "i-heroicons-book-open-solid",
           route: "/student/courses/register",
         },
