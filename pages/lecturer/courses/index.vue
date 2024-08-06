@@ -32,6 +32,7 @@
           icon: 'i-heroicons-circle-stack-20-solid',
           label: 'No Courses found!.',
         }"
+        @select="openStudentsPage"
       >
         <template #index-data="{ index }">
           <p>{{ index + 1 }}</p>
@@ -58,6 +59,7 @@ definePageMeta({
 
 const { fetchCourses } = useLecturerCourses();
 const toast = useToast();
+const router = useRouter();
 const columns = [
   {
     key: "index",
@@ -87,17 +89,18 @@ const columns = [
     key: "actions",
   },
 ];
-const items = (_row: any) => [
+const items = (row: any) => [
   [
     {
       label: "View Students",
       icon: "i-heroicons-eye-20-solid",
       click: () => {
-        //
+        openStudentsPage(row);
       },
     },
   ],
 ];
+
 const q = ref("");
 const levelFilterOptions = ref(["All", "100", "200", "300", "400", "500"]);
 const levelSelected = ref(null);
@@ -133,6 +136,10 @@ const updateFilteredRows = () => {
   } else {
     filteredRows.value = [];
   }
+};
+
+const openStudentsPage = (row: any) => {
+  router.push(`/lecturer/courses/${row.id}/students`);
 };
 
 watch(
