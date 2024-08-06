@@ -2,7 +2,14 @@
   <header
     class="bg-gray-100 fixed top-0 left-[250px] right-0 h-[60px] border border-gray-200 flex items-center justify-between px-4 !z-50"
   >
-    <h1 class="text-xl">{{ title }}</h1>
+    <div class="flex items-center gap-4">
+      <UIcon
+        name="i-heroicons-arrow-left"
+        class="text-2xl cursor-pointer"
+        @click="router.go(-1)"
+      />
+      <h1 class="text-xl">{{ title }}</h1>
+    </div>
     <UPopover>
       <UAvatar
         :alt="name"
@@ -38,6 +45,7 @@ defineProps({
 
 const { logOut } = useAuth();
 const { getUser } = useUser();
+const router = useRouter();
 
 const userProfile = ref(null);
 

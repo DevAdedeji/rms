@@ -19,12 +19,7 @@ export default defineNuxtRouteMiddleware((to, _from) => {
       "/exam-officer/students",
       "/exam-officer/courses",
     ],
-    [UserTypes.student]: [
-      "/student/results",
-      "/student/courses/history",
-      "/student/courses/register",
-      "/student/courses/edit",
-    ],
+    [UserTypes.student]: ["/student/results", "/student/courses"],
     [UserTypes.lecturer]: ["/lecturer/courses"],
   };
 
@@ -33,6 +28,8 @@ export default defineNuxtRouteMiddleware((to, _from) => {
       return navigateTo("/auth/login");
     }
   } else {
+    const routeSegments = to.path.split("/");
+    const baseRoute = `/${routeSegments[1]}/${routeSegments[2]}`;
     const roleRedirection: any = {
       [UserTypes.school]: "/admin/faculties",
       [UserTypes.faculty]: "/exam-officer/dashboard",
@@ -41,9 +38,8 @@ export default defineNuxtRouteMiddleware((to, _from) => {
     };
 
     const redirectTo = roleRedirection[userProfile?.role];
-    const isAllowedToAccess = roleAllowedPaths[userProfile?.role].includes(
-      to.path,
-    );
+    const isAllowedToAccess =
+      roleAllowedPaths[userProfile?.role].includes(baseRoute);
 
     if (to.path === "/") {
       return navigateTo(redirectTo);
