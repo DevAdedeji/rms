@@ -11,7 +11,7 @@ export default defineNuxtRouteMiddleware((to, _from) => {
       "/admin/departments",
       "/admin/head-of-departments",
       "/admin/exam-officers",
-      "/admin/promotion",
+      "/admin/sessions",
     ],
     [UserTypes.faculty]: [
       "/exam-officer/dashboard",
