@@ -11,6 +11,7 @@
               v-model="form.level"
               :options="levelOptions"
               placeholder="Select Level"
+              :disabled="disableLevelOption"
               required
             />
           </UFormGroup>
@@ -21,6 +22,7 @@
               placeholder="Select Semester"
               value-attribute="value"
               required
+              :disabled="disableSemesterOption"
             />
           </UFormGroup>
           <UButton
@@ -140,6 +142,8 @@ const {
   registerCourses,
 } = useStudentCourses();
 const { fetchAllFaculties } = useFaculties();
+const { fetchActiveSession } = useSessions();
+const { fetchActiveSemester } = useSemesters();
 const user = getUser();
 const toast = useToast();
 const route = useRoute();
@@ -298,6 +302,9 @@ watch(levelSelected, () => {
   }
 });
 
+const activeSession = ref<any>({});
+const activeSemester = ref<any>({});
+
 const saving = ref(false);
 const saveSelectedCourses = async () => {
   saving.value = true;
@@ -313,6 +320,7 @@ const saveSelectedCourses = async () => {
     semester: form.value.semester,
     level: form.value?.level,
     registered: true,
+    session: activeSession.value,
   }));
   const saved = await registerCourses(courses);
   if (saved) {
@@ -323,22 +331,60 @@ const saveSelectedCourses = async () => {
   saving.value = false;
 };
 
+const disableSemesterOption = ref(false);
+const disableLevelOption = ref(false);
 watch(
-  [student, () => route],
+  [student, () => route, activeSemester],
   () => {
     if (route.query.type === "old") {
       form.value.semester = route.query.semester as string;
       form.value.level = route.query.level as string;
+      disableSemesterOption.value = true;
+      disableLevelOption.value = true;
+      return;
+    }
+    if (route.query.type === "new") {
+      form.value.semester = route.query.semester as string;
+      form.value.level = route.query.level as string;
+      disableSemesterOption.value = true;
+      disableLevelOption.value = true;
       return;
     }
     if (student.value && student.value.level) {
       form.value.level = student.value.level as string;
+      disableLevelOption.value = true;
+      if (activeSemester.value) {
+        const semester: any = semesterOptions.value.find(
+          (semester: any) => semester.value === activeSemester.value.name,
+        );
+        if (semester) {
+          form.value.semester = semester.value;
+          disableSemesterOption.value = true;
+        }
+      }
     }
   },
   { immediate: true },
 );
 
-onMounted(() => {
-  getFaculties();
+const handleFetchActiveSession = async () => {
+  const session = await fetchActiveSession();
+  if (session) {
+    activeSession.value = session;
+  }
+};
+
+const handleFetchActiveSemester = async () => {
+  const semester = await fetchActiveSemester();
+  if (semester) {
+    activeSemester.value = semester;
+  }
+};
+
+onMounted(async () => {
+  await Promise.all([handleFetchActiveSession(), getFaculties()]);
+});
+onBeforeMount(async () => {
+  await handleFetchActiveSemester();
 });
 </script>

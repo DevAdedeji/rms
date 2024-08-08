@@ -1,10 +1,30 @@
 export const useSessions = () => {
   const client = useSupabaseClient();
+  const toast = useToast();
   const fetchAllSessions = async () => {
     const sessions = await client.from("sessions").select("*");
     return sessions.data;
   };
-  return { fetchAllSessions };
+  const fetchActiveSession = async () => {
+    const { data, error } = await client
+      .from("sessions")
+      .select("*")
+      .filter("is_active", "eq", true)
+      .single();
+    if (data) {
+      return data;
+    }
+    if (error) {
+      toast.add({
+        title: "Error",
+        description: "Pls refresh page, if error persists, reach out to admin",
+        icon: "i-heroicons-x-circle",
+        color: "red",
+      });
+      return false;
+    }
+  };
+  return { fetchAllSessions, fetchActiveSession };
 };
 
 const adding = ref(false);

@@ -27,10 +27,7 @@
           <UButton v-if="registeredCourses.length" @click="edit = true">
             Edit Courses
           </UButton>
-          <UButton
-            v-else
-            :to="`/student/courses/register?type=old&level=${session.level}&semester=${session.semester}`"
-          >
+          <UButton v-else @click="handleRegisterCourses">
             Register Courses
           </UButton>
         </div>
@@ -157,10 +154,12 @@ const {
   registerUpdatedCourses,
 } = useStudentCourses();
 const { fetchAllFaculties } = useFaculties();
+const { fetchActiveSemester } = useSemesters();
 
 const user = getUser();
 const toast = useToast();
 const route = useRoute();
+const router = useRouter();
 
 const studentId = user.id;
 const showPreviewCoursesModal = ref(false);
@@ -227,6 +226,7 @@ const fetchingCourses = ref(false);
 const fetchingAdditionalCourses = ref(false);
 const additionalCourses = ref([]);
 const filteredAdditionalCourses = ref([]);
+const activeSession = ref<any>({});
 
 const getRegisteredCourses = async () => {
   if (student.value?.id || user.id) {
@@ -234,7 +234,7 @@ const getRegisteredCourses = async () => {
     session.value.level = route.query.level as string;
     session.value.semester = route.query.semester as string;
     const level = Number(session.value.level);
-    const fetchedCourses = await fetchRegisteredCourses(
+    const fetchedCourses: any = await fetchRegisteredCourses(
       level,
       session.value.semester,
       student.value?.id || user.id,
@@ -243,6 +243,8 @@ const getRegisteredCourses = async () => {
       courses.value = fetchedCourses;
       selectedCourses.value = fetchedCourses;
       registeredCourses.value = fetchedCourses;
+      const session = fetchedCourses[0].session;
+      activeSession.value = session;
     }
     fetchingCourses.value = false;
   }
@@ -337,6 +339,7 @@ const handlePreviewCourses = () => {
         semester: session.value.semester,
         level: session.value.level,
         registered: course.registered === false ? course.registered : true,
+        session: activeSession.value,
       };
     });
     updatedCourses.value = refactoredCourses;
@@ -359,6 +362,56 @@ const saveUpdatedCourses = async () => {
   saving.value = false;
 };
 
+const activeSemester = ref<any>({});
+const handleFetchActiveSemester = async () => {
+  const semester = await fetchActiveSemester();
+  if (semester) {
+    activeSemester.value = semester;
+  }
+};
+
+const handleRegisterCourses = () => {
+  let type;
+  let url;
+  if (Number(session.value.level) < Number(student.value?.level)) {
+    type = "old";
+    if (
+      (activeSemester.value.name === "harmattan" &&
+        session.value.semester === "harmattan") ||
+      (activeSemester.value.name === "rain" &&
+        session.value.semester === "rain")
+    ) {
+      url = `/student/courses/register?type=${type}&level=${session.value.level}&semester=${session.value.semester}`;
+      router.push(url);
+    } else {
+      toast.add({
+        title: "Error",
+        description: "Cannot register for this semester, pls try again later",
+        color: "red",
+      });
+    }
+    return;
+  }
+  if (Number(session.value.level) === Number(student.value?.level)) {
+    type = "new";
+    if (
+      (activeSemester.value.name === "harmattan" &&
+        session.value.semester === "harmattan") ||
+      (activeSemester.value.name === "rain" &&
+        session.value.semester === "rain")
+    ) {
+      url = `/student/courses/register?type=${type}&level=${session.value.level}&semester=${session.value.semester}`;
+      router.push(url);
+    } else {
+      toast.add({
+        title: "Error",
+        description: "Cannot register for this semester, pls try again later",
+        color: "red",
+      });
+    }
+  }
+};
+
 watch(
   () => route,
   async () => {
@@ -367,8 +420,8 @@ watch(
   { immediate: true },
 );
 
-onMounted(() => {
-  getFaculties();
+onMounted(async () => {
+  await Promise.all([handleFetchActiveSemester(), getFaculties()]);
 });
 </script>
 
