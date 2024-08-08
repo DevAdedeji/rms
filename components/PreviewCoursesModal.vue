@@ -1,8 +1,5 @@
 <template>
-  <UModal
-    v-model="model"
-    class="!flex !items-center !justify-center w-full !min-h-screen"
-  >
+  <UModal v-model="model">
     <UCard class="min-w-[800px] mx-auto">
       <template #header>
         <div class="w-full flex items-center justify-between">
