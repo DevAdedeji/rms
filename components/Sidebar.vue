@@ -58,7 +58,7 @@ const links = computed(() => {
           route: "/admin/exam-officers",
         },
         {
-          label: "Sessions",
+          label: "Sessions & Semesters",
           icon: "i-heroicons-square-3-stack-3d-solid",
           route: "/admin/sessions",
         },
