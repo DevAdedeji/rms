@@ -32,7 +32,7 @@ export const useAuth = () => {
           if (user.role === UserTypes.school) {
             return navigateTo("/admin/faculties");
           } else if (user.role === UserTypes.faculty) {
-            return navigateTo("/exam-officer/dashboard");
+            return navigateTo("/exam-officer/lecturers");
           } else if (user.role === UserTypes.student) {
             return navigateTo("/student/results");
           } else {

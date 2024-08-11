@@ -79,13 +79,14 @@ definePageMeta({
 const route = useRoute();
 const toast = useToast();
 const courseId = route.params.id as string;
+const sessionId = route.query.session_id as string;
 const { fetchCourseStudents, saveCoursesStudentsScores } = useCourseStudents();
 const { calculateGrade, calculatePoint } = useCalculator();
 
 const { data, error, pending, refresh } = await useAsyncData(
   "students",
   async () => {
-    const students = await fetchCourseStudents(courseId);
+    const students = await fetchCourseStudents(courseId, sessionId);
     return students;
   },
 );
@@ -101,10 +102,6 @@ const columns = [
   {
     key: "name",
     label: "Name",
-  },
-  {
-    key: "unit",
-    label: "Unit",
   },
   {
     key: "score",

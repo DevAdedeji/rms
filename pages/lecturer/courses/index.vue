@@ -37,17 +37,9 @@
         <template #index-data="{ index }">
           <p>{{ index + 1 }}</p>
         </template>
-        <template #actions-data="{ row }">
-          <UDropdown :items="items(row)">
-            <UButton
-              color="gray"
-              variant="ghost"
-              icon="i-heroicons-ellipsis-horizontal-20-solid"
-            />
-          </UDropdown>
-        </template>
       </UTable>
     </div>
+    <SessionsList v-model="showSessionsListModal" @selected="sessionSelected" />
   </main>
 </template>
 
@@ -89,17 +81,6 @@ const columns = [
     key: "actions",
   },
 ];
-const items = (row: any) => [
-  [
-    {
-      label: "View Students",
-      icon: "i-heroicons-eye-20-solid",
-      click: () => {
-        openStudentsPage(row);
-      },
-    },
-  ],
-];
 
 const q = ref("");
 const levelFilterOptions = ref(["All", "100", "200", "300", "400", "500"]);
@@ -138,8 +119,20 @@ const updateFilteredRows = () => {
   }
 };
 
+const showSessionsListModal = ref(false);
+const selectedSession = ref<any>({});
+const selectedCourse = ref<any>({});
+const sessionSelected = (session: any) => {
+  selectedSession.value = session;
+  showSessionsListModal.value = false;
+  router.push(
+    `/lecturer/courses/${selectedCourse.value.id}/students?session_id=${selectedSession.value.id}`,
+  );
+};
+
 const openStudentsPage = (row: any) => {
-  router.push(`/lecturer/courses/${row.id}/students`);
+  showSessionsListModal.value = true;
+  selectedCourse.value = row;
 };
 
 watch(
