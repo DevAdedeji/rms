@@ -103,7 +103,7 @@ const updateFilteredRows = () => {
 };
 
 const openStudentPage = (student: User) => {
-  router.push(`/student/${student.id}`);
+  router.push(`/student/info/${student.id}`);
 };
 
 watch(

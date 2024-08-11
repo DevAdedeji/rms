@@ -202,14 +202,14 @@ const expectedGraduationYear = computed(() => {
 
 const openStudentResultPage = (session: any) => {
   router.push(
-    `/student/${studentId}/result?level=${session.level}&semester=${session.semester}`,
+    `/student/info/${studentId}/result?level=${session.level}&semester=${session.semester}`,
   );
 };
 </script>
 
 <style scoped>
 .cover-bg {
-  background-image: url("../../../assets/images/cover.jpg");
+  background-image: url("../../../../assets/images/cover.jpg");
   background-position: center;
   background-size: cover;
   background-repeat: no-repeat;

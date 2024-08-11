@@ -95,11 +95,6 @@ const links = computed(() => {
     if (userProfile.value.role === UserTypes.faculty) {
       return [
         {
-          label: "Dashboard",
-          icon: "i-heroicons-home-solid",
-          route: "/exam-officer/dashboard",
-        },
-        {
           label: "Lecturers",
           icon: "i-heroicons-user-solid",
           route: "/exam-officer/lecturers",

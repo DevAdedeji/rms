@@ -14,12 +14,16 @@ export default defineNuxtRouteMiddleware((to, _from) => {
       "/admin/sessions",
     ],
     [UserTypes.faculty]: [
-      "/exam-officer/dashboard",
       "/exam-officer/lecturers",
       "/exam-officer/students",
       "/exam-officer/courses",
+      "/student/info",
     ],
-    [UserTypes.student]: ["/student/results", "/student/courses"],
+    [UserTypes.student]: [
+      "/student/results",
+      "/student/courses",
+      "/student/info",
+    ],
     [UserTypes.lecturer]: ["/lecturer/courses"],
   };
 
@@ -32,7 +36,7 @@ export default defineNuxtRouteMiddleware((to, _from) => {
     const baseRoute = `/${routeSegments[1]}/${routeSegments[2]}`;
     const roleRedirection: any = {
       [UserTypes.school]: "/admin/faculties",
-      [UserTypes.faculty]: "/exam-officer/dashboard",
+      [UserTypes.faculty]: "/exam-officer/lecturers",
       [UserTypes.student]: "/student/results",
       [UserTypes.lecturer]: "/lecturer/courses",
     };

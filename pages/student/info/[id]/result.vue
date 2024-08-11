@@ -70,43 +70,8 @@
           <UTable :rows="[result]" :columns="semesterResultColumn" />
         </div>
         <div v-if="!isAdmin" class="flex items-center justify-end">
-          <UButton
-            class="mt-10 px-6 py-4"
-            :loading="savingResult"
-            @click="handleSaving"
-          >
-            Save Result
-          </UButton>
+          <UButton class="mt-10 px-6 py-4"> Save Result </UButton>
         </div>
-      </div>
-      <UButton
-        v-if="!resultFormatted && !isAdmin"
-        class="ml-auto self-start px-6 py-4"
-        @click="handleFormatCoursesAsResult"
-        >Update</UButton
-      >
-      <div
-        v-if="isAdmin && resultFound"
-        class="flex items-center justify-center"
-      >
-        <UButton
-          v-if="!resultApproved"
-          class="px-6 py-4"
-          color="red"
-          :loading="updatingResult"
-          @click="handleApproveResult"
-        >
-          Approve Result
-        </UButton>
-        <UButton
-          v-else
-          class="px-6 py-4"
-          color="red"
-          :loading="updatingResult"
-          @click="handleUnapproveResult"
-        >
-          Disapprove Result
-        </UButton>
       </div>
     </div>
   </main>
@@ -117,17 +82,11 @@ definePageMeta({
   layout: "dashboard",
   middleware: ["auth"],
 });
-const {
-  fetchStudentById,
-  fetchStudentCourseBySession,
-  fetchStudentResult,
-  saveStudentResult,
-} = useStudent();
-const { calculateGrade, calculatePoint, calculateClass } = useCalculator();
+const { fetchStudentById } = useStudent();
+const { calculateGrade, calculatePoint } = useCalculator();
 const toast = useToast();
 const route = useRoute();
 const { getUser } = useUser();
-const { toggleResult, updatingResult } = useResults();
 // const router = useRouter();
 const studentId = route.params.id as string;
 
@@ -214,18 +173,6 @@ const session = ref({
 
 const courses = ref([]);
 const fetchingCourses = ref(true);
-const fetchCourses = async () => {
-  fetchingCourses.value = true;
-  const fetchedCourses = await fetchStudentCourseBySession(
-    studentId,
-    session.value.semester,
-    session.value.level,
-  );
-  if (fetchedCourses) {
-    courses.value = fetchedCourses;
-  }
-  fetchingCourses.value = false;
-};
 
 const handleScoreChange = (row: any) => {
   row.grade = calculateGrade(row.score);
@@ -234,130 +181,14 @@ const handleScoreChange = (row: any) => {
 };
 
 const result = ref<any>({});
-const resultId = ref(null);
 const resultFound = ref(false);
 const resultFormatted = ref(false);
 const resultSaved = ref(false);
 const resultApproved = ref(false);
 
-const handleFormatCoursesAsResult = () => {
-  formatCoursesAsResult();
-  resultFormatted.value = true;
-};
-
-const formatCoursesAsResult = () => {
-  const formattedCourses = courses.value.map((course: any) => {
-    return {
-      id: course.course.course_id,
-      title: course.course.title,
-      code: course.course.course_code,
-      score: course.score,
-      unit: course.unit,
-      grade: course.grade,
-      point: course.point,
-      level: course.level,
-      semester: course.semester,
-    };
-  });
-  const totalUnit = formattedCourses.reduce(
-    (total, course) => total + course.unit,
-    0,
-  );
-  const totalPointScored = formattedCourses.reduce(
-    (total, course) => total + course.point,
-    0,
-  );
-  const totalPoint = formattedCourses.reduce(
-    (total, course) => total + 5 * course.point,
-    0,
-  );
-  const gpa = Number((totalPointScored / totalUnit).toFixed(2));
-  const gpaClass = calculateClass(gpa);
-  result.value = resultFound.value
-    ? {
-        courses: formattedCourses,
-        level: Number(session.value.level),
-        semester: session.value.semester,
-        user_id: studentId,
-        student: student.value,
-        total_point: totalPoint,
-        total_point_scored: totalPointScored,
-        total_unit: totalUnit,
-        gpa,
-        approved: resultApproved.value,
-        class: gpaClass,
-        id: resultId.value,
-      }
-    : {
-        courses: formattedCourses,
-        level: Number(session.value.level),
-        semester: session.value.semester,
-        user_id: studentId,
-        student: student.value,
-        total_point: totalPoint,
-        total_point_scored: totalPointScored,
-        total_unit: totalUnit,
-        gpa,
-        approved: false,
-        class: gpaClass,
-      };
-};
-
-const savingResult = ref(false);
-const handleSaving = async () => {
-  savingResult.value = true;
-  const saved = await saveStudentResult(result.value);
-  savingResult.value = false;
-  if (saved) {
-    resultSaved.value = true;
-  } else {
-    resultSaved.value = false;
-  }
-};
-const handleApproveResult = async () => {
-  result.value.approved = true;
-  result.value.approved_by = user.id;
-  await toggleResult(result.value);
-  await getDetails();
-};
-const handleUnapproveResult = async () => {
-  result.value.approved = false;
-  await toggleResult(result.value);
-  await getDetails();
-};
-
-const formatCoursesIfResult = (result: any) => {
-  const fetchedCourses = result.courses;
-  fetchedCourses.forEach((course: any) => {
-    const newCourse: any = courses.value.find(
-      (fetchedCourse: any) => fetchedCourse.course.course_id === course.id,
-    );
-    if (newCourse) {
-      newCourse.point = course.point;
-      newCourse.grade = course.grade;
-      newCourse.score = course.score;
-    }
-  });
-  formatCoursesAsResult();
-};
-
-const getDetails = async () => {
+const getDetails = () => {
   session.value.level = route.query.level as string;
   session.value.semester = route.query.semester as string;
-  const result: any = await fetchStudentResult(
-    studentId,
-    session.value.semester,
-    session.value.level,
-  );
-  await fetchCourses();
-  if (result) {
-    resultFound.value = true;
-    resultId.value = result.id;
-    resultApproved.value = result.approved;
-    formatCoursesIfResult(result);
-  } else {
-    resultFound.value = false;
-  }
 };
 
 watch(
@@ -371,7 +202,7 @@ watch(
 
 <style scoped>
 .cover-bg {
-  background-image: url("../../../assets/images/cover.jpg");
+  background-image: url("../../../../assets/images/cover.jpg");
   background-position: center;
   background-size: cover;
   background-repeat: no-repeat;

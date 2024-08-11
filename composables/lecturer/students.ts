@@ -2,11 +2,12 @@ export const useCourseStudents = () => {
   const client = useSupabaseClient();
   const toast = useToast();
 
-  const fetchCourseStudents = async (id: string) => {
+  const fetchCourseStudents = async (courseId: string, sessionId: string) => {
     const students = await client
       .from("student_courses")
       .select("*")
-      .filter("course->id", "eq", id);
+      .filter("course->id", "eq", courseId)
+      .filter("session->id", "eq", sessionId);
     return students.data;
   };
 
