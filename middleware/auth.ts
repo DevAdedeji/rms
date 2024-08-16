@@ -19,12 +19,9 @@ export default defineNuxtRouteMiddleware((to, _from) => {
       "/exam-officer/courses",
       "/student/info",
     ],
-    [UserTypes.student]: [
-      "/student/results",
-      "/student/courses",
-      "/student/info",
-    ],
+    [UserTypes.student]: ["/student/results", "/student/courses"],
     [UserTypes.lecturer]: ["/lecturer/courses"],
+    [UserTypes.hod]: ["/hod/students", "/student/info"],
   };
 
   if (!user.value) {

@@ -19,7 +19,7 @@
           {{ session.semester }} semester
         </p>
         <p
-          v-if="resultFound || resultSaved"
+          v-if="resultFound"
           class="capitalize text-[#09A5BE] flex items-center gap-1"
         >
           <span class="text-[#000000]">Approval:</span>
@@ -62,15 +62,42 @@
           <UInput v-model="row.point" disabled class="w-[50px]" />
         </template>
       </UTable>
-      <div v-if="resultFormatted || (isAdmin && resultFound)">
+      <div v-if="gpaCalculated">
         <p class="text-2xl font-semibold text-gray-600 capitalize pb-2">
           {{ session.semester }} Semester Result
         </p>
         <div class="w-1/2">
           <UTable :rows="[result]" :columns="semesterResultColumn" />
         </div>
-        <div v-if="!isAdmin" class="flex items-center justify-end">
-          <UButton class="mt-10 px-6 py-4"> Save Result </UButton>
+      </div>
+      <div v-if="isExamOfficer && resultFound">
+        <div class="flex items-center justify-end gap-3 mt-5">
+          <UButton class="px-6 py-4" @click="calculateGPA"
+            >Calculate GPA</UButton
+          >
+          <UButton
+            class="px-6 py-4"
+            :loading="updating"
+            :disabled="updating"
+            @click="updateResult"
+          >
+            Save Result
+          </UButton>
+        </div>
+      </div>
+      <div v-if="isHOD && resultFound">
+        <div class="flex items-center justify-end gap-3 mt-5">
+          <UButton class="px-6 py-4" @click="calculateGPA"
+            >Calculate GPA</UButton
+          >
+          <UButton
+            class="px-6 py-4"
+            :loading="approving"
+            :disabled="approving"
+            @click="approveResult"
+          >
+            Approve Result
+          </UButton>
         </div>
       </div>
     </div>
@@ -78,12 +105,16 @@
 </template>
 
 <script setup lang="ts">
+import { UserTypes } from "~/types/auth/user";
+
 definePageMeta({
   layout: "dashboard",
   middleware: ["auth"],
 });
 const { fetchStudentById } = useStudent();
-const { calculateGrade, calculatePoint } = useCalculator();
+const { fetchStudentSemesterResult, updateStudentSemesterResult } =
+  useStudentResult();
+const { calculateGrade, calculatePoint, calculateClass } = useCalculator();
 const toast = useToast();
 const route = useRoute();
 const { getUser } = useUser();
@@ -108,7 +139,8 @@ if (error.value) {
 
 const student = computed(() => data.value);
 const user = getUser();
-const isAdmin = computed(() => user.role === "school_admin");
+const isExamOfficer = computed(() => user.role === UserTypes.faculty);
+const isHOD = computed(() => user.role === UserTypes.hod);
 
 const name = computed(() =>
   student.value
@@ -177,18 +209,76 @@ const fetchingCourses = ref(true);
 const handleScoreChange = (row: any) => {
   row.grade = calculateGrade(row.score);
   row.point = calculatePoint(row.grade, row.unit);
-  resultFormatted.value = false;
 };
 
-const result = ref<any>({});
 const resultFound = ref(false);
-const resultFormatted = ref(false);
-const resultSaved = ref(false);
-const resultApproved = ref(false);
+const result = ref<any>({});
+const gpaCalculated = ref(false);
 
-const getDetails = () => {
+const resultApproved = computed(() => {
+  if (resultFound.value) {
+    const resultApproved = courses.value.every(
+      (course: any) => course.approved,
+    );
+    return resultApproved;
+  }
+  return false;
+});
+
+const getDetails = async () => {
+  fetchingCourses.value = true;
   session.value.level = route.query.level as string;
   session.value.semester = route.query.semester as string;
+  const fetchedCourses = await fetchStudentSemesterResult(
+    studentId,
+    session.value.level,
+    session.value.semester,
+  );
+  if (fetchedCourses && fetchedCourses.length) {
+    courses.value = fetchedCourses;
+    resultFound.value = true;
+  }
+  fetchingCourses.value = false;
+};
+const calculateGPA = () => {
+  const totalUnit = courses.value.reduce(
+    (total, course: any) => total + course.unit,
+    0,
+  );
+  const totalPointScored = courses.value.reduce(
+    (total, course: any) => total + course.point,
+    0,
+  );
+  // const totalPoint = courses.value.reduce(
+  //   (total, course: any) => total + 5 * course.point,
+  //   0,
+  // );
+  const gpa = Number((totalPointScored / totalUnit).toFixed(2));
+  const gpaClass = calculateClass(gpa);
+  result.value = {
+    total_point_scored: totalPointScored,
+    total_unit: totalUnit,
+    gpa,
+    class: gpaClass,
+  };
+  gpaCalculated.value = true;
+};
+
+const updating = ref(false);
+const updateResult = async () => {
+  updating.value = true;
+  await updateStudentSemesterResult(courses.value);
+  updating.value = false;
+  await getDetails();
+};
+
+const approving = ref(false);
+const approveResult = async () => {
+  approving.value = true;
+  courses.value.forEach((course: any) => (course.approved = true));
+  await updateStudentSemesterResult(courses.value);
+  approving.value = false;
+  await getDetails();
 };
 
 watch(

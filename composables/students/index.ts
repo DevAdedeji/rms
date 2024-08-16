@@ -134,3 +134,53 @@ export const useSignUpStudent = () => {
 
   return { signing_up, signed_up, signUpStudent };
 };
+
+export const useStudentResult = () => {
+  const client = useSupabaseClient();
+  const toast = useToast();
+
+  const fetchStudentSemesterResult = async (
+    studentId: string,
+    level: string,
+    semester: string,
+  ) => {
+    const { data, error } = await client
+      .from("student_courses")
+      .select("*")
+      .filter("student_id", "eq", studentId)
+      .filter("level", "eq", level)
+      .filter("semester", "eq", semester);
+    if (data) {
+      return data;
+    }
+    if (error) {
+      toast.add({
+        title: "Error",
+        description: "Couldn't fetch semester result, pls try again later",
+        icon: "i-heroicons-x-circle",
+        color: "red",
+      });
+    }
+  };
+
+  const updateStudentSemesterResult = async (formData: any) => {
+    const { error } = await client.from("student_courses").upsert(formData);
+    if (error) {
+      toast.add({
+        title: "Error",
+        description: "Couldn't update student result, pls try again later",
+        icon: "i-heroicons-x-circle",
+        color: "red",
+      });
+    } else {
+      toast.add({
+        title: "Success",
+        description: "Student result updated successfully",
+        icon: "i-heroicons-check-circle",
+        color: "green",
+      });
+    }
+  };
+
+  return { fetchStudentSemesterResult, updateStudentSemesterResult };
+};

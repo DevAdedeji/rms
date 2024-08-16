@@ -92,6 +92,15 @@ const links = computed(() => {
         },
       ];
     }
+    if (userProfile.value.role === UserTypes.hod) {
+      return [
+        {
+          label: "Students",
+          icon: "i-heroicons-user-circle-solid",
+          route: "/hod/students",
+        },
+      ];
+    }
     if (userProfile.value.role === UserTypes.faculty) {
       return [
         {

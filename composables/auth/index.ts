@@ -35,6 +35,8 @@ export const useAuth = () => {
             return navigateTo("/exam-officer/lecturers");
           } else if (user.role === UserTypes.student) {
             return navigateTo("/student/results");
+          } else if (user.role === UserTypes.hod) {
+            return navigateTo("/hod/students");
           } else {
             return navigateTo("/lecturer/courses");
           }
