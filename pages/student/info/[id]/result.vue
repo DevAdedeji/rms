@@ -91,12 +91,22 @@
             >Calculate GPA</UButton
           >
           <UButton
+            v-if="!resultApproved"
             class="px-6 py-4"
             :loading="approving"
             :disabled="approving"
             @click="approveResult"
           >
             Approve Result
+          </UButton>
+          <UButton
+            v-else
+            class="px-6 py-4 bg-[red]"
+            :loading="unApproving"
+            :disabled="unApproving"
+            @click="UnapproveResult"
+          >
+            UnApprove Result
           </UButton>
         </div>
       </div>
@@ -235,8 +245,8 @@ const getDetails = async () => {
     session.value.semester,
   );
   if (fetchedCourses && fetchedCourses.length) {
-    courses.value = fetchedCourses;
     resultFound.value = true;
+    courses.value = fetchedCourses;
   }
   fetchingCourses.value = false;
 };
@@ -278,6 +288,15 @@ const approveResult = async () => {
   courses.value.forEach((course: any) => (course.approved = true));
   await updateStudentSemesterResult(courses.value);
   approving.value = false;
+  await getDetails();
+};
+
+const unApproving = ref(false);
+const UnapproveResult = async () => {
+  unApproving.value = true;
+  courses.value.forEach((course: any) => (course.approved = false));
+  await updateStudentSemesterResult(courses.value);
+  unApproving.value = false;
   await getDetails();
 };
 
