@@ -149,7 +149,8 @@ export const useStudentResult = () => {
       .select("*")
       .filter("student_id", "eq", studentId)
       .filter("level", "eq", level)
-      .filter("semester", "eq", semester);
+      .filter("semester", "eq", semester)
+      .filter("registered", "eq", true);
     if (data) {
       return data;
     }

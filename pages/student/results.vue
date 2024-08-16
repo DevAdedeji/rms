@@ -44,7 +44,6 @@ definePageMeta({
 });
 
 const { getUser } = useUser();
-const { searchForSemesterResult } = useResults();
 
 const student = getUser();
 
@@ -80,28 +79,12 @@ const form = ref({
   semester: "",
 });
 const searching = ref(false);
-const result = ref<any>();
+// const result = ref<any>();
 const showResultNotFoundModal = ref(false);
 const showResultNotYetApprovedModal = ref(false);
 
-const searchForResult = async () => {
+const searchForResult = () => {
   searching.value = true;
-  result.value = await searchForSemesterResult(
-    student.id,
-    form.value.semester,
-    Number(form.value.level),
-  );
-
-  if (result.value) {
-    if (result.value.length === 0) {
-      showResultNotFoundModal.value = true;
-    } else {
-      result.value = result.value[0];
-      if (!result.value.approved) {
-        showResultNotYetApprovedModal.value = true;
-      }
-    }
-  }
   searching.value = false;
 };
 </script>
