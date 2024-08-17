@@ -1,14 +1,19 @@
 <template>
   <header
-    class="bg-gray-100 fixed top-0 left-[250px] right-0 h-[60px] border border-gray-200 flex items-center justify-between px-4 !z-50"
+    class="bg-gray-100 fixed top-0 left-0 lg:left-[250px] right-0 h-[60px] border border-gray-200 flex items-center justify-between px-4 !z-50"
   >
     <div class="flex items-center gap-4">
+      <UIcon
+        name="i-heroicons-bars-4"
+        class="block lg:hidden text-2xl cursor-pointer mr-3"
+        @click="toggleMobileNav"
+      />
       <UIcon
         name="i-heroicons-arrow-left"
         class="text-2xl cursor-pointer"
         @click="router.go(-1)"
       />
-      <h1 class="text-xl">{{ title }}</h1>
+      <h1 class="text-base sm:text-xl">{{ title }}</h1>
     </div>
     <UPopover>
       <UAvatar
@@ -44,6 +49,7 @@ defineProps({
 });
 
 const { logOut } = useAuth();
+const { toggleMobileNav } = useMobileNav();
 const { getUser } = useUser();
 const router = useRouter();
 

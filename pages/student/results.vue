@@ -1,15 +1,17 @@
 <template>
-  <main class="bg-white min-h-screen w-full pr-5">
+  <main class="bg-white min-h-screen w-full lg:pr-5">
     <div class="flex flex-col h-full items-center justify-center py-10 gap-10">
       <div
         v-if="!resultFound"
         class="w-full min-h-[70vh] flex items-center justify-center"
       >
         <form
-          class="flex flex-col gap-6 w-[50%] px-10 pt-10 pb-20 rounded-md shadow-xl"
+          class="flex flex-col gap-6 w-[90%] sm:w-2/3 md:w-[50%] px-10 pt-10 pb-20 rounded-md shadow-xl"
           @submit.prevent="searchForResult"
         >
-          <h2 class="text-center text-2xl py-6">Select Academic Session</h2>
+          <h2 class="text-center text-xl sm:text-2xl py-6">
+            Select Academic Session
+          </h2>
           <UFormGroup label="Your Level">
             <USelectMenu
               v-model="form.level"
@@ -34,8 +36,10 @@
           </div>
         </form>
       </div>
-      <div v-else class="w-full flex flex-col gap-10">
-        <div class="flex flex-col gap-3 bg-[#DDF9FD] p-4 w-1/3 font-bold">
+      <div v-else class="w-[90%] mx-auto lg:w-full flex flex-col gap-10">
+        <div
+          class="w-full flex flex-col gap-3 bg-[#DDF9FD] p-4 md:w-1/3 font-bold"
+        >
           <p class="text-[#09A5BE]">
             <span class="text-[#000000]">Level:</span> {{ form.level }}L
           </p>
@@ -66,9 +70,9 @@
         </UTable>
         <div>
           <p class="text-2xl font-semibold text-gray-600 capitalize pb-2">
-            {{ form.semester }} Semester Result
+            {{ form.semester }} Semester Result GPA
           </p>
-          <div class="w-1/2">
+          <div class="w-full md:w-1/2">
             <UTable :rows="[result]" :columns="semesterResultColumn" />
           </div>
         </div>

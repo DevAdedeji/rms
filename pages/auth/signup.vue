@@ -1,7 +1,7 @@
 <template>
   <main class="bg-primary min-h-screen w-full flex items-center justify-center">
     <div class="w-full h-full flex items-center justify-center">
-      <UCard v-if="!showSignUpForm" class="min-w-[600px]">
+      <UCard v-if="!showSignUpForm" class="w-[90%] sm:w-[70%] lg:min-w-[600px]">
         <div class="flex flex-col gap-6 items-center justify-center p-6">
           <img
             src="../../assets/images/logo.png"
@@ -30,12 +30,17 @@
               <p>{{ user.name }}</p>
             </button>
           </div>
+          <div class="flex self-end justify-end">
+            <NuxtLink to="/auth/login" class="text-sm text-red-500"
+              >Have an account already?</NuxtLink
+            >
+          </div>
           <UButton class="py-2 px-4" @click="continueToSignUp">
             Continue
           </UButton>
         </div>
       </UCard>
-      <UCard v-else class="!w-[50%]">
+      <UCard v-else class="w-[90%] sm:w-[70%] lg:!w-[50%] my-4">
         <UButton @click="showSignUpForm = false">
           <UIcon name="i-heroicons-arrow-left-solid" class="text-2xl" />
         </UButton>

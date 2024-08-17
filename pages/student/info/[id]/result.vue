@@ -64,7 +64,7 @@
       </UTable>
       <div v-if="gpaCalculated">
         <p class="text-2xl font-semibold text-gray-600 capitalize pb-2">
-          {{ session.semester }} Semester Result
+          {{ session.semester }} Semester Result GPA
         </p>
         <div class="w-1/2">
           <UTable :rows="[result]" :columns="semesterResultColumn" />
