@@ -1,9 +1,9 @@
 <template>
-  <main class="bg-white min-h-screen w-full pr-5">
-    <div class="flex flex-col gap-10 py-10">
+  <main class="bg-white min-h-screen w-full lg:pr-5">
+    <div class="w-[90%] mx-auto lg:w-full flex flex-col gap-10 py-10">
       <div class="w-full">
         <form
-          class="w-[300px] flex flex-col gap-3"
+          class="max-w-[300px] lg:w-[300px] flex flex-col gap-3"
           @submit.prevent="handleSemesterSelected"
         >
           <UFormGroup label="Your Level">
@@ -68,7 +68,9 @@
                 v-else-if="item.key === 'additional_courses'"
                 class="space-y-3 flex flex-col gap-5"
               >
-                <div class="flex items-center justify-between">
+                <div
+                  class="flex flex-col gap-3 lg:flex-row lg:items-center justify-between"
+                >
                   <form @submit.prevent="handleFacultySelected">
                     <div class="flex items-end gap-2">
                       <UFormGroup label="Select Faculty" class="!w-[300px]">

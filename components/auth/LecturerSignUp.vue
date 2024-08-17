@@ -1,7 +1,7 @@
 <template>
   <div class="w-full">
     <form class="flex flex-col gap-6" @submit.prevent="submitForm">
-      <div class="grid grid-cols-2 gap-3">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
         <UFormGroup
           label="First Name"
           :error="$v.first_name.$error && 'You must enter your first name'"
@@ -31,7 +31,7 @@
           />
         </UFormGroup>
       </div>
-      <div class="grid grid-cols-2 gap-3">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
         <UFormGroup
           label="Select Faculty"
           :error="$v.faculty.$error && 'You must select faculty'"
@@ -80,8 +80,7 @@
           </USelectMenu>
         </UFormGroup>
       </div>
-
-      <div class="grid grid-cols-2 gap-3">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
         <UFormGroup
           label="Email Address"
           :error="$v.email.$error && 'You must enter email address'"
@@ -112,6 +111,11 @@
             "
           />
         </UFormGroup>
+      </div>
+      <div class="flex self-end justify-end">
+        <NuxtLink to="/auth/login" class="text-sm text-red-500"
+          >Have an account already?</NuxtLink
+        >
       </div>
       <UButton
         type="submit"

@@ -1,7 +1,7 @@
 <template>
-  <main class="bg-white min-h-screen w-full pr-5">
+  <main class="bg-white min-h-screen w-full lg:pr-5">
     <div class="flex flex-col gap-10 py-10">
-      <div v-if="student" class="w-full flex flex-col gap-6">
+      <div v-if="student" class="w-[90%] mx-auto lg:w-full flex flex-col gap-6">
         <h1 class="text-2xl font-medium">List of course registered</h1>
         <UCard>
           <template #header>

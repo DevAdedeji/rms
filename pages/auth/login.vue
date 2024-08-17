@@ -1,7 +1,7 @@
 <template>
   <main class="bg-primary min-h-screen w-full flex items-center justify-center">
     <div class="w-full h-full flex items-center justify-center">
-      <UCard class="!w-[35%]">
+      <UCard class="w-[90%] sm:w-[70%] lg:!w-[35%]">
         <div class="w-full flex flex-col gap-6 items-center justify-center p-6">
           <img
             src="../../assets/images/logo.png"
