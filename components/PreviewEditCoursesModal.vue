@@ -1,6 +1,6 @@
 <template>
   <UModal v-model="model">
-    <UCard class="min-w-[800px] mx-auto">
+    <UCard class="w-full mx-auto">
       <template #header>
         <div class="w-full flex items-center justify-between">
           <h1 class="font-semibold">Selected Courses</h1>

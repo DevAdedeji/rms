@@ -25,6 +25,7 @@
             <NuxtLink
               class="w-full flex items-center text-sm gap-4 py-1 px-2"
               :to="link.route"
+              @click.stop="toggleMobileNav"
             >
               <UIcon :name="link.icon" />
               <p>{{ link.label }}</p>
@@ -40,7 +41,7 @@
 import { UserTypes } from "~/types/auth/user";
 const route = useRoute();
 const { getUser } = useUser();
-const { openMobileNav } = useMobileNav();
+const { openMobileNav, toggleMobileNav } = useMobileNav();
 
 const userProfile = ref(null);
 const links = computed(() => {

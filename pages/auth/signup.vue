@@ -1,8 +1,11 @@
 <template>
   <main class="bg-primary min-h-screen w-full flex items-center justify-center">
     <div class="w-full h-full flex items-center justify-center">
-      <UCard v-if="!showSignUpForm" class="w-[90%] sm:w-[70%] lg:min-w-[600px]">
-        <div class="flex flex-col gap-6 items-center justify-center p-6">
+      <UCard
+        v-if="!showSignUpForm"
+        class="w-[90%] sm:w-[70%] lg:min-w-[600px] my-4"
+      >
+        <div class="flex flex-col gap-6 items-center justify-center sm:p-6">
           <img
             src="../../assets/images/logo.png"
             class="w-[200px] object-contain"
@@ -10,7 +13,7 @@
           <h1 class="text-lg text-black text-center">
             Please select user type
           </h1>
-          <div class="flex items-center gap-16">
+          <div class="flex md:flex-row flex-col items-center gap-6 md:gap-16">
             <button
               v-for="user in userTypes"
               :key="user.id"
@@ -44,7 +47,9 @@
         <UButton @click="showSignUpForm = false">
           <UIcon name="i-heroicons-arrow-left-solid" class="text-2xl" />
         </UButton>
-        <div class="w-full flex flex-col gap-6 items-center justify-center p-6">
+        <div
+          class="w-full flex flex-col gap-6 items-center justify-center sm:p-6"
+        >
           <img
             src="../../assets/images/logo.png"
             class="w-[200px] object-contain"

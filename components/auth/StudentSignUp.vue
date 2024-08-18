@@ -117,7 +117,7 @@
           </USelectMenu>
         </UFormGroup>
       </div>
-      <div class="grid grid-cols-2 md:grid-cols-2 gap-3">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
         <UFormGroup label="Level">
           <USelectMenu
             v-model="form.level"
@@ -178,7 +178,7 @@
       </div>
       <div class="flex self-end justify-end">
         <NuxtLink to="/auth/login" class="text-sm text-red-500"
-          >Have an already?</NuxtLink
+          >Have an account already?</NuxtLink
         >
       </div>
       <UButton
