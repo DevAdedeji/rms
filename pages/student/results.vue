@@ -36,10 +36,22 @@
           </div>
         </form>
       </div>
-      <div v-else class="w-[90%] mx-auto lg:w-full flex flex-col gap-10">
+      <div
+        v-else
+        id="student-result"
+        class="w-[90%] mx-auto lg:w-full flex flex-col"
+      >
         <div
-          class="w-full flex flex-col gap-3 bg-[#DDF9FD] p-4 md:w-1/3 font-bold"
+          class="w-full flex flex-col gap-3 bg-[#DDF9FD] p-4 md:w-1/3 font-bold mb-10"
         >
+          <p class="text-[#09A5BE]">
+            <span class="text-[#000000]">Name:</span>
+            {{ student.first_name + " " + student.last_name }}
+          </p>
+          <p class="text-[#09A5BE]">
+            <span class="text-[#000000]">Matric No:</span>
+            {{ student.matric_no }}
+          </p>
           <p class="text-[#09A5BE]">
             <span class="text-[#000000]">Level:</span> {{ form.level }}L
           </p>
@@ -62,13 +74,13 @@
             <p>{{ row.score }}</p>
           </template>
           <template #grade-data="{ row }">
-            <UInput v-model="row.grade" disabled class="w-[50px]" />
+            <p>{{ row.grade }}</p>
           </template>
           <template #point-data="{ row }">
-            <UInput v-model="row.point" disabled class="w-[50px]" />
+            <p>{{ row.point }}</p>
           </template>
         </UTable>
-        <div>
+        <div class="mt-10">
           <p class="text-2xl font-semibold text-gray-600 capitalize pb-2">
             {{ form.semester }} Semester Result GPA
           </p>
@@ -77,6 +89,12 @@
           </div>
         </div>
       </div>
+      <UButton
+        v-if="resultFound"
+        class="ml-auto p-3"
+        @click="printResult('student-result')"
+        >Print Result</UButton
+      >
     </div>
     <LazyResultNotFoundModal v-model="showResultNotFoundModal" />
     <LazyResultNotApprovedModal v-model="showResultNotYetApprovedModal" />
@@ -93,6 +111,7 @@ const { getUser } = useUser();
 // const toast = useToast();
 const { fetchStudentSemesterResult } = useStudentResult();
 const { calculateClass } = useCalculator();
+const { printResult } = usePrint();
 
 const student = getUser();
 
