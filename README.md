@@ -20,6 +20,9 @@ christopherabolaji@gmail.com
 monkele//12
 adeniranuma@yahoo.com
 omobonike
+ojedokunjohn2019@gmail.com
+Utme2019
+
 
 Student Login
 matric no: 191111
