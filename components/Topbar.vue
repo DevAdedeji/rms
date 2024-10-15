@@ -63,11 +63,6 @@ const name = computed(() =>
 
 const links = ref([
   {
-    label: "Settings",
-    icon: "i-heroicons-cog-6-tooth-solid",
-    action: () => {},
-  },
-  {
     label: "Sign out",
     icon: "i-heroicons-arrow-right-end-on-rectangle-solid",
     action: () => {
