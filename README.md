@@ -18,6 +18,8 @@ ayooluwapoakindeko3@gmail.com
 Ayo@123
 christopherabolaji@gmail.com
 monkele//12
+adeniranuma@yahoo.com
+omobonike
 
 Student Login
 matric no: 191111
