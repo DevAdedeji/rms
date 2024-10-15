@@ -14,10 +14,8 @@ password: tunde123
 Lecturer Login
 ismaila@gmail.com
 ismaila123
-olabiyisi@gmail.com
-olabiyisi123
-adeyemo@gmail.com
-adeyemo123
+ayooluwapoakindeko3@gmail.com
+Ayo@123
 
 Student Login
 matric no: 191111
